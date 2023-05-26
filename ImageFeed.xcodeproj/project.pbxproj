@@ -13,6 +13,7 @@
 		DD049C132A2138CD00F2A8D3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DD049C112A2138CD00F2A8D3 /* Main.storyboard */; };
 		DD049C152A2138CE00F2A8D3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD049C142A2138CE00F2A8D3 /* Assets.xcassets */; };
 		DD049C182A2138CE00F2A8D3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DD049C162A2138CE00F2A8D3 /* LaunchScreen.storyboard */; };
+		DD049C212A213DD800F2A8D3 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD049C202A213DD800F2A8D3 /* UIColor+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		DD049C142A2138CE00F2A8D3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DD049C172A2138CE00F2A8D3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DD049C192A2138CE00F2A8D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DD049C202A213DD800F2A8D3 /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 		DD049C0A2A2138CD00F2A8D3 /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
+				DD049C1F2A213D9F00F2A8D3 /* Helpers */,
 				DD049C0B2A2138CD00F2A8D3 /* AppDelegate.swift */,
 				DD049C0D2A2138CD00F2A8D3 /* SceneDelegate.swift */,
 				DD049C0F2A2138CD00F2A8D3 /* ViewController.swift */,
@@ -65,6 +68,14 @@
 				DD049C192A2138CE00F2A8D3 /* Info.plist */,
 			);
 			path = ImageFeed;
+			sourceTree = "<group>";
+		};
+		DD049C1F2A213D9F00F2A8D3 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				DD049C202A213DD800F2A8D3 /* UIColor+Extensions.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,6 +152,7 @@
 				DD049C102A2138CD00F2A8D3 /* ViewController.swift in Sources */,
 				DD049C0C2A2138CD00F2A8D3 /* AppDelegate.swift in Sources */,
 				DD049C0E2A2138CD00F2A8D3 /* SceneDelegate.swift in Sources */,
+				DD049C212A213DD800F2A8D3 /* UIColor+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
