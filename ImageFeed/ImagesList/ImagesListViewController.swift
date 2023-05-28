@@ -101,6 +101,10 @@ extension ImagesListViewController {
     cell.dateLabel.textColor = .ypWhite
     cell.dateLabel.font = .systemFont(ofSize: 13, weight: .regular)
     cell.dateLabel.text = dateFormatter.string(from: Date())
+    cell.dateLabel.layer.shadowColor = UIColor.black.cgColor
+    cell.dateLabel.layer.shadowOpacity = 1
+    cell.dateLabel.layer.shadowRadius = 7
+    cell.dateLabel.layer.shadowOffset = CGSize(width: 0, height: 0)
     
     // Setup button
     cell.likeButton.tintColor = .ypRed
