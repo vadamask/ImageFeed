@@ -8,5 +8,7 @@
 import UIKit
 
 extension UIColor {
-  static let ypBlack = UIColor(red: 26, green: 27, blue: 34, alpha: 1)
+  static let ypBlack = UIColor(named: "YPBlack")
+  static let ypWhite = UIColor(named: "YPWhite")
+  static let ypRed = UIColor(named: "YPRed")
 }
