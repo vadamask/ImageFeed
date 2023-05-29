@@ -7,12 +7,18 @@
 
 import UIKit
 
-class ImagesListViewController: UIViewController {
+final class ImagesListViewController: UIViewController {
 
-  
   @IBOutlet private var tableView: UITableView!
   
   private let photosName = Array(0..<20).map { "\($0)" }
+  
+  private lazy var dateFormatter: DateFormatter = {
+      let formatter = DateFormatter()
+      formatter.dateStyle = .long
+      formatter.timeStyle = .none
+      return formatter
+  }()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -36,13 +42,6 @@ class ImagesListViewController: UIViewController {
   private func setupView() {
     view.backgroundColor = UIColor.ypBlack
   }
-  
-  private lazy var dateFormatter: DateFormatter = {
-      let formatter = DateFormatter()
-      formatter.dateStyle = .long
-      formatter.timeStyle = .none
-      return formatter
-  }()
 }
 
 extension ImagesListViewController: UITableViewDataSource {
@@ -109,7 +108,7 @@ extension ImagesListViewController {
     // Setup button
     cell.likeButton.tintColor = .ypRed
     cell.likeButton.setTitle("", for: .normal)
-    if indexPath.row % 2 == 0 {
+    if indexPath.row % 2 != 0 {
       cell.likeButton.setImage(UIImage(named: "ActiveLike"), for: .normal)
     } else {
       cell.likeButton.setImage(UIImage(named: "NoActiveLike"), for: .normal)
