@@ -33,12 +33,8 @@ final class ProfileViewController: UIViewController {
     profileImageView.image = UIImage(named: "Photo")
     
     logOutButton.setTitle("", for: .normal)
-    let configuration = UIImage.SymbolConfiguration(weight: .bold)
-    let image = UIImage(systemName: "ipad.and.arrow.forward", withConfiguration: configuration)
-    logOutButton.setImage(image, for: .normal)
+    logOutButton.setImage(UIImage(named: "LogoutButton"), for: .normal)
     logOutButton.tintColor = .ypRed
-    
-    
     
     nameLabel.text = "Екатерина Новикова"
     nameLabel.textColor = .ypWhite
