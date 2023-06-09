@@ -33,7 +33,7 @@ final class ProfileViewController: UIViewController {
     profileImageView.image = UIImage(named: "Photo")
     
     logOutButton.setTitle("", for: .normal)
-    logOutButton.setImage(UIImage(named: "LogoutButton"), for: .normal)
+    logOutButton.setImage(UIImage(named: "button_logout"), for: .normal)
     logOutButton.tintColor = .ypRed
     
     nameLabel.text = "Екатерина Новикова"

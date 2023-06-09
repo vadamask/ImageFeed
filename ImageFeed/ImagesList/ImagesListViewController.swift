@@ -12,6 +12,7 @@ final class ImagesListViewController: UIViewController {
   @IBOutlet private var tableView: UITableView!
   
   private let photosName = Array(0..<20).map { "\($0)" }
+  private let showSingleImageSegueIdentifer = "ShowSingleImage"
   
   private lazy var dateFormatter: DateFormatter = {
       let formatter = DateFormatter()
@@ -41,6 +42,17 @@ final class ImagesListViewController: UIViewController {
   
   private func setupView() {
     view.backgroundColor = UIColor.ypBlack
+  }
+  
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    if segue.identifier == showSingleImageSegueIdentifer {
+      let viewController = segue.destination as! SingleImageViewController
+      let indexPath = sender as! IndexPath
+      let image = UIImage(named: photosName[indexPath.row])
+      viewController.image = image
+    } else {
+      super.prepare(for: segue, sender: sender)
+    }
   }
 }
 
@@ -76,6 +88,11 @@ extension ImagesListViewController: UITableViewDelegate {
     let imageViewHeight = imageHeight + imageInsets.top + imageInsets.bottom
     return imageViewHeight
   }
+  
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    tableView.deselectRow(at: indexPath, animated: true)
+    performSegue(withIdentifier: showSingleImageSegueIdentifer, sender: indexPath)
+  }
 }
 
 extension ImagesListViewController {
@@ -100,18 +117,14 @@ extension ImagesListViewController {
     cell.dateLabel.textColor = .ypWhite
     cell.dateLabel.font = .systemFont(ofSize: 13, weight: .regular)
     cell.dateLabel.text = dateFormatter.string(from: Date())
-    cell.dateLabel.layer.shadowColor = UIColor.black.cgColor
-    cell.dateLabel.layer.shadowOpacity = 1
-    cell.dateLabel.layer.shadowRadius = 7
-    cell.dateLabel.layer.shadowOffset = CGSize(width: 0, height: 0)
     
     // Setup button
     cell.likeButton.tintColor = .ypRed
     cell.likeButton.setTitle("", for: .normal)
     if indexPath.row % 2 != 0 {
-      cell.likeButton.setImage(UIImage(named: "ActiveLike"), for: .normal)
+      cell.likeButton.setImage(UIImage(named: "like_active"), for: .normal)
     } else {
-      cell.likeButton.setImage(UIImage(named: "NoActiveLike"), for: .normal)
+      cell.likeButton.setImage(UIImage(named: "like_disable"), for: .normal)
     }
   }
 }
