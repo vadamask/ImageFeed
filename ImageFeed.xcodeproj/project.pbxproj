@@ -64,7 +64,7 @@
 		DD049C0A2A2138CD00F2A8D3 /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
-				DDC7E10C2A339E28003568B3 /* Single Image */,
+				DDC7E10C2A339E28003568B3 /* SingleImageView */,
 				DD59E4C72A32432C005C650F /* Profile */,
 				DD049C222A2147E500F2A8D3 /* ImagesList */,
 				DD049C0B2A2138CD00F2A8D3 /* AppDelegate.swift */,
@@ -103,12 +103,12 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
-		DDC7E10C2A339E28003568B3 /* Single Image */ = {
+		DDC7E10C2A339E28003568B3 /* SingleImageView */ = {
 			isa = PBXGroup;
 			children = (
 				DDC7E10D2A339E4B003568B3 /* SingleImageViewController.swift */,
 			);
-			path = "Single Image";
+			path = SingleImageView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
