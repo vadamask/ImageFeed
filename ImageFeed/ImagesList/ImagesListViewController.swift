@@ -9,7 +9,15 @@ import UIKit
 
 final class ImagesListViewController: UIViewController {
 
-  @IBOutlet private var tableView: UITableView!
+  @IBOutlet private var tableView: UITableView! {
+    didSet {
+      tableView.delegate = self
+      tableView.dataSource = self
+      tableView.backgroundColor = UIColor.ypBlack
+      tableView.separatorStyle = .none
+      tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+    }
+  }
   
   private let photosName = Array(0..<20).map { "\($0)" }
   private let showSingleImageSegueIdentifer = "ShowSingleImage"
@@ -24,24 +32,11 @@ final class ImagesListViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    setupTableView()
-    setupView()
+    view.backgroundColor = UIColor.ypBlack
   }
   
   override var preferredStatusBarStyle: UIStatusBarStyle {
     .lightContent
-  }
-  
-  private func setupTableView() {
-    tableView.delegate = self
-    tableView.dataSource = self
-    tableView.backgroundColor = UIColor.ypBlack
-    tableView.separatorStyle = .none
-    tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-  }
-  
-  private func setupView() {
-    view.backgroundColor = UIColor.ypBlack
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -99,10 +94,11 @@ extension ImagesListViewController {
   
   private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
     
-    // Setup cell
-    cell.backgroundColor = .clear
+    cell.backgroundColor = .ypBlack
+    cell.mainView.backgroundColor = .ypBlack
+    cell.mainView.clipsToBounds = true
+    cell.mainView.layer.cornerRadius = 16
     
-    // Setup image view
     let imageName = photosName[indexPath.row]
     if let image = UIImage(named: imageName) {
       cell.cellImageView.image = image
@@ -110,15 +106,11 @@ extension ImagesListViewController {
       preconditionFailure("Image Not Found")
     }
     cell.cellImageView.contentMode = .scaleAspectFill
-    cell.cellImageView.layer.masksToBounds = true
-    cell.cellImageView.layer.cornerRadius = 16
-    
-    // Setup label
+  
     cell.dateLabel.textColor = .ypWhite
     cell.dateLabel.font = .systemFont(ofSize: 13, weight: .regular)
     cell.dateLabel.text = dateFormatter.string(from: Date())
     
-    // Setup button
     cell.likeButton.tintColor = .ypRed
     cell.likeButton.setTitle("", for: .normal)
     if indexPath.row % 2 != 0 {
@@ -126,5 +118,24 @@ extension ImagesListViewController {
     } else {
       cell.likeButton.setImage(UIImage(named: "like_disable"), for: .normal)
     }
+
+    let gradientLayer = CAGradientLayer()
+    gradientLayer.colors = [
+      UIColor(red: 0.102, green: 0.106, blue: 0.133, alpha: 0).cgColor,
+      UIColor(red: 0.102, green: 0.106, blue: 0.133, alpha: 0.2).cgColor
+    ]
+    gradientLayer.locations = [0.0, 1.0]
+    gradientLayer.startPoint = CGPoint(x: 0.25, y: 0.5)
+    gradientLayer.endPoint = CGPoint(x: 0.75, y: 0.5)
+    gradientLayer.transform = CATransform3DMakeAffineTransform(CGAffineTransform(
+      a: 0, b: 0.54, c: -0.54, d: 0, tx: 0.77, ty: 0)
+    )
+    
+    gradientLayer.frame = cell.gradientView.bounds.insetBy(
+      dx: -0.5 * cell.gradientView.bounds.size.width,
+      dy: -0.5 * cell.gradientView.bounds.size.height
+    )
+    cell.gradientView.backgroundColor = .clear
+    cell.gradientView.layer.addSublayer(gradientLayer)
   }
 }

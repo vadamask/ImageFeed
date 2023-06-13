@@ -9,61 +9,72 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
   
-  private var profileImageView: UIImageView!
-  private var nameLabel: UILabel!
-  private var userNameLabel: UILabel!
-  private var descriptionLabel: UILabel!
-  private var logOutButton: UIButton!
+  private var profileImageView: UIImageView = {
+    let imageView = UIImageView()
+    imageView.image = UIImage(named: "Photo")
+    imageView.clipsToBounds = true
+    imageView.layer.cornerRadius = imageView.frame.width / 2
+    imageView.translatesAutoresizingMaskIntoConstraints = false
+    return imageView
+  }()
+  
+  private var nameLabel: UILabel = {
+    let label = UILabel()
+    label.text = "Екатерина Новикова"
+    label.textColor = .ypWhite
+    label.font = UIFont.systemFont(ofSize: 23, weight: .bold)
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+  
+  private var userNameLabel: UILabel = {
+    let label = UILabel()
+    label.text = "@ekaterina_nov"
+    label.textColor = .ypGray
+    label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+  
+  private var descriptionLabel: UILabel = {
+    let label = UILabel()
+    label.text = "Hello, World!"
+    label.textColor = .ypWhite
+    label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+  
+  private var logOutButton: UIButton = {
+    let button = UIButton.systemButton(
+      with: UIImage(named: "button_logout")!,
+      target: self,
+      action: #selector(logOutButtonPressed)
+    )
+    button.tintColor = .ypRed
+    button.translatesAutoresizingMaskIntoConstraints = false
+    return button
+  }()
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    setupUI()
-    setConstraints()
+    view.backgroundColor = .ypBlack
+    setupConstraints()
   }
   
   override var preferredStatusBarStyle: UIStatusBarStyle {
     .lightContent
   }
   
-  private func setupUI() {
-    view.backgroundColor = .ypBlack
+  private func setupConstraints() {
     
-    profileImageView = UIImageView()
-    profileImageView.image = UIImage(named: "Photo")
-    profileImageView.clipsToBounds = true
-    profileImageView.layer.cornerRadius = profileImageView.frame.width / 2
-    profileImageView.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(profileImageView)
-    
-    nameLabel = UILabel()
-    nameLabel.text = "Екатерина Новикова"
-    nameLabel.textColor = .ypWhite
-    nameLabel.font = UIFont.systemFont(ofSize: 23, weight: .bold)
-    nameLabel.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(nameLabel)
-    
-    userNameLabel = UILabel()
-    userNameLabel.text = "@ekaterina_nov"
-    userNameLabel.textColor = .ypGray
-    userNameLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-    userNameLabel.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(userNameLabel)
-    
-    descriptionLabel = UILabel()
-    descriptionLabel.text = "Hello, World!"
-    descriptionLabel.textColor = .ypWhite
-    descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-    descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(descriptionLabel)
-    
-    logOutButton = UIButton.systemButton(with: UIImage(named: "button_logout")!, target: self, action: #selector(logOutButtonPressed))
-    logOutButton.tintColor = .ypRed
-    logOutButton.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(logOutButton)
-  }
-  
-  private func setConstraints() {
+    
     NSLayoutConstraint.activate([
       profileImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
       profileImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
