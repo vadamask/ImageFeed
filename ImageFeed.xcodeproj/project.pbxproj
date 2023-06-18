@@ -70,9 +70,8 @@
 				DD049C0B2A2138CD00F2A8D3 /* AppDelegate.swift */,
 				DD049C0D2A2138CD00F2A8D3 /* SceneDelegate.swift */,
 				DD049C112A2138CD00F2A8D3 /* Main.storyboard */,
-				DD049C142A2138CE00F2A8D3 /* Assets.xcassets */,
-				DD049C162A2138CE00F2A8D3 /* LaunchScreen.storyboard */,
 				DD049C192A2138CE00F2A8D3 /* Info.plist */,
+				DD6BDE232A3DCBC00072C04E /* Resources */,
 				DD049C1F2A213D9F00F2A8D3 /* Helpers */,
 			);
 			path = ImageFeed;
@@ -101,6 +100,15 @@
 				DD59E4C82A324375005C650F /* ProfileViewController.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		DD6BDE232A3DCBC00072C04E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DD049C162A2138CE00F2A8D3 /* LaunchScreen.storyboard */,
+				DD049C142A2138CE00F2A8D3 /* Assets.xcassets */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		DDC7E10C2A339E28003568B3 /* SingleImageView */ = {
