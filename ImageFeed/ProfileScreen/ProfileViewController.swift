@@ -9,7 +9,7 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
   
-  private var profileImageView: UIImageView = {
+  private let profileImageView: UIImageView = {
     let imageView = UIImageView()
     imageView.image = UIImage(named: "Photo")
     imageView.clipsToBounds = true
@@ -18,7 +18,7 @@ final class ProfileViewController: UIViewController {
     return imageView
   }()
   
-  private var nameLabel: UILabel = {
+  private let nameLabel: UILabel = {
     let label = UILabel()
     label.text = "Екатерина Новикова"
     label.textColor = .ypWhite
@@ -27,7 +27,7 @@ final class ProfileViewController: UIViewController {
     return label
   }()
   
-  private var userNameLabel: UILabel = {
+  private let userNameLabel: UILabel = {
     let label = UILabel()
     label.text = "@ekaterina_nov"
     label.textColor = .ypGray
@@ -36,7 +36,7 @@ final class ProfileViewController: UIViewController {
     return label
   }()
   
-  private var descriptionLabel: UILabel = {
+  private let descriptionLabel: UILabel = {
     let label = UILabel()
     label.text = "Hello, World!"
     label.textColor = .ypWhite
@@ -45,7 +45,7 @@ final class ProfileViewController: UIViewController {
     return label
   }()
   
-  private var logOutButton: UIButton = {
+  private let logOutButton: UIButton = {
     let button = UIButton.systemButton(
       with: UIImage(named: "button_logout")!,
       target: self,
