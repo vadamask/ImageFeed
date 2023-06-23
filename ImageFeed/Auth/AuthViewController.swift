@@ -11,7 +11,7 @@ class AuthViewController: UIViewController {
   
   @IBOutlet private var logoImageView: UIImageView!
   @IBOutlet private var button: UIButton!
-  private let segueIdentifier = "ShowWebView"
+  private let toWebView = "ShowWebView"
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -24,15 +24,31 @@ class AuthViewController: UIViewController {
     
     button.setTitle("Войти", for: .normal)
     button.setTitleColor(.ypBlack, for: .normal)
-   // button.setTitleColor(.ypBlack, for: .highlighted)
-    button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-    
-    
+    button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
+  }
+  
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    if segue.identifier == toWebView {
+      let wvvc = segue.destination as? WebViewViewController
+      wvvc?.delegate = self
+    }
   }
   
   @IBAction private func buttonTapped() {
     
   }
- 
+  
+}
+
+extension AuthViewController: WebViewViewControllerDelegate {
+  
+  func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+    
+  }
+  
+  func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
+    vc.dismiss(animated: true)
+  }
+  
   
 }
