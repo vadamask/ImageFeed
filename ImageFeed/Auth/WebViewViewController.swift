@@ -87,8 +87,7 @@ extension WebViewViewController: WKNavigationDelegate {
   func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
     
     if let code = code(from: navigationAction) {
-      //TODO: process code
-      
+      delegate.webViewViewController(self, didAuthenticateWithCode: code)
       decisionHandler(.cancel)
     } else {
       decisionHandler(.allow)
@@ -102,10 +101,10 @@ extension WebViewViewController: WKNavigationDelegate {
        let items = urlComponents.queryItems,
        let codeItem = items.first(where: {$0.name == "code"})
     {
-      //print(url)
       return codeItem.value
     } else {
       return nil
     }
   }
 }
+
