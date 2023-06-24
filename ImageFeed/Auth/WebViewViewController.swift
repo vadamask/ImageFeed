@@ -8,22 +8,61 @@
 import UIKit
 import WebKit
 
-class WebViewViewController: UIViewController {
+final class WebViewViewController: UIViewController {
   
   @IBOutlet private var webView: WKWebView!
   @IBOutlet private var backButton: UIButton!
+  @IBOutlet private var progressView: UIProgressView!
   var delegate: WebViewViewControllerDelegate!
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    webView.navigationDelegate = self
+    setupViews()
+    makeRequest()
+    
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    
+    webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
+  }
+  
+  override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+    
+    webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
+  }
+  
+  override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    if keyPath == #keyPath(WKWebView.estimatedProgress) {
+      updateProgress()
+    } else {
+      super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+    }
+  }
+  
+  private func updateProgress() {
+    progressView.progress = Float(webView.estimatedProgress)
+    progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+  }
+  
+  private func setupViews() {
+    progressView.progressTintColor = .ypBlack
+    progressView.progress = 0.0
+    progressView.isHidden = true
+    
     webView.backgroundColor = .ypWhite
     webView.isOpaque = false
-    webView.navigationDelegate = self
+    
     
     backButton.setTitle("", for: .normal)
     backButton.setImage(UIImage(named: "nav_back_button"), for: .normal)
-    
+  }
+  
+  private func makeRequest() {
     var urlComponents = URLComponents(string: UnsplashAuthorizeURLString)!
     urlComponents.queryItems = [
       URLQueryItem(name: "client_id", value: AccessKey),
@@ -32,13 +71,12 @@ class WebViewViewController: UIViewController {
       URLQueryItem(name: "scope", value: AccessScope)
     ]
     let url = urlComponents.url!
-    
     let request = URLRequest(url: url)
     webView.load(request)
   }
   
   @IBAction private func didTapBackButton(_ sender: Any?) {
-    
+    delegate.webViewViewControllerDidCancel(self)
   }
   
 }
@@ -64,6 +102,7 @@ extension WebViewViewController: WKNavigationDelegate {
        let items = urlComponents.queryItems,
        let codeItem = items.first(where: {$0.name == "code"})
     {
+      //print(url)
       return codeItem.value
     } else {
       return nil

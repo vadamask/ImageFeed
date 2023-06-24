@@ -7,11 +7,11 @@
 
 import UIKit
 
-class AuthViewController: UIViewController {
+final class AuthViewController: UIViewController {
   
   @IBOutlet private var logoImageView: UIImageView!
   @IBOutlet private var button: UIButton!
-  private let toWebView = "ShowWebView"
+  private let segueToWebView = "ShowWebView"
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -28,7 +28,7 @@ class AuthViewController: UIViewController {
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    if segue.identifier == toWebView {
+    if segue.identifier == segueToWebView {
       let wvvc = segue.destination as? WebViewViewController
       wvvc?.delegate = self
     }
