@@ -7,14 +7,18 @@
 
 import Foundation
 
+fileprivate let AccessTokenURL = "https://unsplash.com/oauth/token"
+
 final class OAuth2Service {
+  
   enum NetworkError: Error {
     case httpStatusCode(Int)
     case urlRequestError(Error)
-    case urlSessionError
+    case urlSessionError(Error)
   }
   
-  func fetchAuthToken(code: String, completion: @escaping (Result<Data, Error>) -> Void) {
+  func fetchAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
+    
     var urlComponents = URLComponents(string: AccessTokenURL)!
     urlComponents.queryItems = [
       URLQueryItem(name: "client_id", value: AccessKey),
@@ -29,12 +33,14 @@ final class OAuth2Service {
     request.httpMethod = "POST"
     
     let task = URLSession.shared.dataTask(with: request) { data, response, error in
+      
       if let error = error {
         DispatchQueue.main.async {
-          completion(.failure(error))
+          completion(.failure(NetworkError.urlSessionError(error)))
         }
         return
       }
+      
       if let response = response as? HTTPURLResponse {
         if response.statusCode < 200 || response.statusCode >= 300 {
           DispatchQueue.main.async {
@@ -45,8 +51,14 @@ final class OAuth2Service {
       }
       
       if let data = data {
-        DispatchQueue.main.async {
-          completion(.success(data))
+        
+        do {
+          let responseBody = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
+          DispatchQueue.main.async {
+            completion(.success(responseBody.accessToken))
+          }
+        } catch {
+          print("Decode error - \(error)")
         }
       }
     }

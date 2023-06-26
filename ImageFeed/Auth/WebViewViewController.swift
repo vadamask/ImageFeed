@@ -8,12 +8,19 @@
 import UIKit
 import WebKit
 
+fileprivate let UnsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+
+protocol WebViewViewControllerDelegate: AnyObject {
+  func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String)
+  func webViewViewControllerDidCancel(_ vc: WebViewViewController)
+}
+
 final class WebViewViewController: UIViewController {
   
   @IBOutlet private var webView: WKWebView!
   @IBOutlet private var backButton: UIButton!
   @IBOutlet private var progressView: UIProgressView!
-  var delegate: WebViewViewControllerDelegate!
+  weak var delegate: WebViewViewControllerDelegate?
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -21,7 +28,6 @@ final class WebViewViewController: UIViewController {
     webView.navigationDelegate = self
     setupViews()
     makeRequest()
-    
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -76,18 +82,16 @@ final class WebViewViewController: UIViewController {
   }
   
   @IBAction private func didTapBackButton(_ sender: Any?) {
-    delegate.webViewViewControllerDidCancel(self)
+    delegate?.webViewViewControllerDidCancel(self)
   }
-  
 }
-
 
 extension WebViewViewController: WKNavigationDelegate {
   
   func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
     
     if let code = code(from: navigationAction) {
-      delegate.webViewViewController(self, didAuthenticateWithCode: code)
+      delegate?.webViewViewController(self, didAuthenticateWithCode: code)
       decisionHandler(.cancel)
     } else {
       decisionHandler(.allow)
