@@ -51,6 +51,8 @@ final class ImagesListViewController: UIViewController {
     }
 }
 
+//MARK: - UITableViewDataSource
+
 extension ImagesListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -67,6 +69,8 @@ extension ImagesListViewController: UITableViewDataSource {
         return imageListCell
     }
 }
+
+//MARK: - UITableViewDelegate
 
 extension ImagesListViewController: UITableViewDelegate {
     

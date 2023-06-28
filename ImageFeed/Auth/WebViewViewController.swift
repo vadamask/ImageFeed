@@ -69,22 +69,29 @@ final class WebViewViewController: UIViewController {
     }
     
     private func makeRequest() {
-        var urlComponents = URLComponents(string: UnsplashAuthorizeURLString)!
+        guard var urlComponents = URLComponents(string: UnsplashAuthorizeURLString) else {
+            fatalError("Failed to make urlComponents from \(UnsplashAuthorizeURLString)")
+        }
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: AccessKey),
             URLQueryItem(name: "redirect_uri", value: RedirectURI),
             URLQueryItem(name: "response_type", value: "code"),
             URLQueryItem(name: "scope", value: AccessScope)
         ]
-        let url = urlComponents.url!
-        let request = URLRequest(url: url)
-        webView.load(request)
+        if let url = urlComponents.url {
+            let request = URLRequest(url: url)
+            webView.load(request)
+        } else {
+            fatalError("Failed to make URL from \(urlComponents)")
+        }
     }
     
     @IBAction private func didTapBackButton(_ sender: Any?) {
         delegate?.webViewViewControllerDidCancel(self)
     }
 }
+
+//MARK: - WKNavigationDelegate
 
 extension WebViewViewController: WKNavigationDelegate {
     

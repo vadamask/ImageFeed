@@ -7,8 +7,8 @@
 
 import Foundation
 
-final class OAuth2TokenStorage {
-    var token: String? {
+struct OAuth2TokenStorage {
+    static var token: String? {
         get {
             UserDefaults.standard.string(forKey: "token")
         }

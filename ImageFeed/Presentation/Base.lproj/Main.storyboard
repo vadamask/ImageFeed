@@ -302,7 +302,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Vector" translatesAutoresizingMaskIntoConstraints="NO" id="cvG-Ae-NGT">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo_practicum" translatesAutoresizingMaskIntoConstraints="NO" id="cvG-Ae-NGT">
                                 <rect key="frame" x="159" y="387" width="75" height="78"/>
                             </imageView>
                         </subviews>
@@ -384,10 +384,10 @@
     </scenes>
     <resources>
         <image name="0" width="200" height="132"/>
-        <image name="Vector" width="75" height="78"/>
         <image name="button_backward" width="9" height="15.666666984558105"/>
         <image name="button_sharing" width="50.333332061767578" height="50"/>
         <image name="like_active" width="30" height="27.333333969116211"/>
+        <image name="logo_practicum" width="75" height="78"/>
         <image name="tab_editorial_active" width="20" height="22"/>
         <image name="tab_profile_active" width="24" height="24"/>
         <namedColor name="YPBlack">

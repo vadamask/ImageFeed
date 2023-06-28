@@ -19,7 +19,9 @@ final class OAuth2Service {
     
     func fetchAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
         
-        var urlComponents = URLComponents(string: AccessTokenURL)!
+        guard var urlComponents = URLComponents(string: AccessTokenURL) else {
+            fatalError("Failed to make urlComponents from \(AccessTokenURL)")
+        }
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: AccessKey),
             URLQueryItem(name: "client_secret", value: SecretKey),
@@ -27,7 +29,10 @@ final class OAuth2Service {
             URLQueryItem(name: "code", value: code),
             URLQueryItem(name: "grant_type", value: "authorization_code")
         ]
-        let url = urlComponents.url!
+        
+        guard let url = urlComponents.url else {
+            fatalError("Failed to make URL from \(urlComponents)")
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -53,12 +58,15 @@ final class OAuth2Service {
             if let data = data {
                 
                 do {
-                    let responseBody = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
+                    let decoder = JSONDecoder()
+                    decoder.keyDecodingStrategy = .convertFromSnakeCase
+                    let responseBody = try decoder.decode(OAuthTokenResponseBody.self, from: data)
                     DispatchQueue.main.async {
+                        print(responseBody.accessToken)
                         completion(.success(responseBody.accessToken))
                     }
                 } catch {
-                    print("Decode error - \(error)")
+                    fatalError("Decode error - \(error)")
                 }
             }
         }

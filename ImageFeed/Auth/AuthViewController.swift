@@ -23,6 +23,7 @@ final class AuthViewController: UIViewController {
         super.viewDidLoad()
         
         setupViews()
+        navigationController?.navigationBar.barStyle = .black
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -49,6 +50,8 @@ final class AuthViewController: UIViewController {
         
     }
 }
+
+//MARK: - WebViewViewControllerDelegate
 
 extension AuthViewController: WebViewViewControllerDelegate {
     
