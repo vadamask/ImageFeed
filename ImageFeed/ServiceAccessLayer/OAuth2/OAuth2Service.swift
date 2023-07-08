@@ -7,7 +7,7 @@
 
 import Foundation
 
-fileprivate let AccessTokenURL = "https://unsplash.com/oauth/token"
+fileprivate let accessTokenURL = "https://unsplash.com/oauth/token"
 
 final class OAuth2Service {
     
@@ -19,9 +19,11 @@ final class OAuth2Service {
     
     func fetchAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
         
-        guard var urlComponents = URLComponents(string: AccessTokenURL) else {
-            fatalError("Failed to make urlComponents from \(AccessTokenURL)")
+        guard var urlComponents = URLComponents(string: accessTokenURL) else {
+            assertionFailure("Failed to make URLComponents from \(accessTokenURL)")
+            return
         }
+        
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: AccessKey),
             URLQueryItem(name: "client_secret", value: SecretKey),
@@ -31,7 +33,8 @@ final class OAuth2Service {
         ]
         
         guard let url = urlComponents.url else {
-            fatalError("Failed to make URL from \(urlComponents)")
+            assertionFailure("Failed to make URL from \(urlComponents)")
+            return
         }
         
         var request = URLRequest(url: url)
@@ -66,7 +69,7 @@ final class OAuth2Service {
                         completion(.success(responseBody.accessToken))
                     }
                 } catch {
-                    fatalError("Decode error - \(error)")
+                    assertionFailure("Decode error - \(error)")
                 }
             }
         }

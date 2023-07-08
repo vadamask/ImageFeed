@@ -35,24 +35,20 @@ final class SplashViewController: UIViewController {
         if segue.identifier == showAuthenticationScreenSegueIdentifier {
             guard let navigationController = segue.destination as? UINavigationController,
                   let rootVC = navigationController.viewControllers[0] as? AuthViewController
-            else { fatalError("Failed to prepare for \(showAuthenticationScreenSegueIdentifier)")}
+            else { assertionFailure("Failed to prepare for \(showAuthenticationScreenSegueIdentifier)")
+                return
+            }
             rootVC.delegate = self
         } else {
             super.prepare(for: segue, sender: sender)
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        setNeedsStatusBarAppearanceUpdate()
-    }
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        .lightContent
-    }
-    
     private func switchToTabBarController() {
-        guard let window = UIApplication.shared.windows.first else {fatalError("Invalid Configuration")}
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid Configuration")
+            return
+        }
         let tabBar = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "TabBarViewController")
         window.rootViewController = tabBar
     }
@@ -63,6 +59,7 @@ final class SplashViewController: UIViewController {
 extension SplashViewController: AuthViewControllerDelegate {
     
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
+        ProgressHUD.colorAnimation = .ypBlue ?? .blue
         ProgressHUD.animationType = .circleRotateChase
         ProgressHUD.show()
         

@@ -70,7 +70,8 @@ final class WebViewViewController: UIViewController {
     
     private func makeRequest() {
         guard var urlComponents = URLComponents(string: UnsplashAuthorizeURLString) else {
-            fatalError("Failed to make urlComponents from \(UnsplashAuthorizeURLString)")
+            assertionFailure("Failed to make urlComponents from \(UnsplashAuthorizeURLString)")
+            return
         }
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: AccessKey),
@@ -82,7 +83,8 @@ final class WebViewViewController: UIViewController {
             let request = URLRequest(url: url)
             webView.load(request)
         } else {
-            fatalError("Failed to make URL from \(urlComponents)")
+            assertionFailure("Failed to make URL from \(urlComponents)")
+            return
         }
     }
     
