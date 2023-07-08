@@ -11,10 +11,20 @@ fileprivate let accessTokenURL = "https://unsplash.com/oauth/token"
 
 final class OAuth2Service {
     
+    struct OAuthTokenResponseBody: Decodable {
+        let accessToken: String
+        let tokenType: String
+        let scope: String
+        let createdAt: Int
+    }
+    
     enum NetworkError: Error {
         case httpStatusCode(Int)
         case urlRequestError(Error)
         case urlSessionError(Error)
+    }
+    
+    enum ParseError: Error {
         case decodeError(Error)
     }
     
@@ -66,7 +76,7 @@ final class OAuth2Service {
                     }
                 } catch {
                     DispatchQueue.main.async {
-                        completion(.failure(NetworkError.decodeError(error)))
+                        completion(.failure(ParseError.decodeError(error)))
                         self.task = nil
                     }
                 }
