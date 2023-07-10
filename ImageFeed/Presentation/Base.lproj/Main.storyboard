@@ -362,10 +362,10 @@
             </objects>
             <point key="canvasLocation" x="610" y="804"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Auth Flow Navigation Controller-->
         <scene sceneID="Pgr-bO-jRm">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="rb1-i0-3ZG" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="rb1-i0-3ZG" customClass="AuthFlowNavigationController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="xS0-Jm-n3W"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="7q0-dZ-U7h">

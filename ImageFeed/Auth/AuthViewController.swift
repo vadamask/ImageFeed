@@ -23,7 +23,6 @@ final class AuthViewController: UIViewController {
         super.viewDidLoad()
         
         setupViews()
-        navigationController?.navigationBar.barStyle = .black
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -34,6 +33,10 @@ final class AuthViewController: UIViewController {
             }
             webViewVC.delegate = self
         }
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
     }
     
     private func setupViews() {
@@ -47,9 +50,7 @@ final class AuthViewController: UIViewController {
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
     }
     
-    @IBAction private func buttonTapped() {
-        
-    }
+    @IBAction private func buttonTapped() {}
 }
 
 //MARK: - WebViewViewControllerDelegate
