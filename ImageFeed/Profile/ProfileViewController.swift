@@ -58,12 +58,30 @@ final class ProfileViewController: UIViewController {
         return button
     }()
     
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        
+        addObserver()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        addObserver()
+    }
+    
+    deinit {
+        removeObserver()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .ypBlack
         setupConstraints()
         updateProfileDetails()
+        
+        if let avavtarURL = ProfileImageService.shared.avatarURL,
+           let url = URL(string: avavtarURL) {}
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -106,7 +124,32 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    @objc private func logOutButtonPressed() {
-        
+    private func addObserver() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateAvatar(notification:)),
+            name: ProfileImageService.DidChangeNotification,
+            object: nil
+        )
     }
+    
+    private func removeObserver() {
+        NotificationCenter.default.removeObserver(
+            self,
+            name: ProfileImageService.DidChangeNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func updateAvatar(notification: Notification) {
+        guard
+            isViewLoaded,
+            let userInfo = notification.userInfo,
+            let profileImageURL = userInfo["URL"] as? String,
+            let url = URL(string: profileImageURL)
+        else { return }
+    }
+    
+    @objc private func logOutButtonPressed() {}
+    
 }

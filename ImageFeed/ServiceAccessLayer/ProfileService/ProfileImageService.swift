@@ -62,6 +62,12 @@ final class ProfileImageService {
                         guard let self = self else { return }
                         completion(.success(user.profileImage.small))
                         
+                        NotificationCenter.default.post(
+                            name: ProfileImageService.DidChangeNotification,
+                            object: self,
+                            userInfo: ["URL": user.profileImage.small]
+                        )
+                        self.avatarURL = user.profileImage.small
                     }
                 } catch {
                     DispatchQueue.main.async {
