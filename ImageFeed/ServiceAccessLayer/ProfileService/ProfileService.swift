@@ -16,7 +16,7 @@ final class ProfileService {
         let bio: String
     }
     
-    struct Profile {
+    struct ProfileViewModel {
         let username: String
         let name: String
         let loginName: String
@@ -24,14 +24,13 @@ final class ProfileService {
     }
     
     private var task: URLSessionTask?
-    private(set) var profile: Profile?
+    private(set) var profile: ProfileViewModel?
     
     static let shared = ProfileService()
     
-    func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
+    func fetchProfile(_ token: String, completion: @escaping (Result<ProfileViewModel, Error>) -> Void) {
         
         assert(Thread.isMainThread)
-        
         task?.cancel()
         
         guard var request = URLRequest.makeHTTPRequest(path: "/me", httpMethod: "GET") else {
@@ -63,14 +62,16 @@ final class ProfileService {
                     let decoder = JSONDecoder()
                     decoder.keyDecodingStrategy = .convertFromSnakeCase
                     let profileResult = try decoder.decode(ProfileResult.self, from: data)
-                    let profile = Profile(
+                    
+                    let profile = ProfileViewModel(
                         username: profileResult.username,
                         name: "\(profileResult.firstName) \(profileResult.lastName)",
                         loginName: "@\(profileResult.username)",
                         bio: profileResult.bio
                     )
                     
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
                         completion(.success(profile))
                         self.profile = profile
                     }

@@ -37,7 +37,7 @@ final class SplashViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showAuthenticationScreenSegueIdentifier {
-            guard let navigationController = segue.destination as? UINavigationController,
+            guard let navigationController = segue.destination as? AuthFlowNavigationController,
                   let rootVC = navigationController.viewControllers[0] as? AuthViewController
             else { assertionFailure("Failed to prepare for \(showAuthenticationScreenSegueIdentifier)")
                 return
@@ -88,7 +88,6 @@ extension SplashViewController: AuthViewControllerDelegate {
     private func fetchProfile(with token: String) {
         profileService.fetchProfile(token) { [weak self] result in
             guard let self = self else { return }
-            
             switch result {
             case .success(let profile):
                 ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { _ in }

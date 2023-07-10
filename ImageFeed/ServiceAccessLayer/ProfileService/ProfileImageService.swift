@@ -25,6 +25,7 @@ final class ProfileImageService {
     
     func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {
         
+        task?.cancel()
         
         guard var request = URLRequest.makeHTTPRequest(path: "/users/\(username)", httpMethod: "GET"),
               let token = OAuth2TokenStorage.token else {
@@ -52,16 +53,14 @@ final class ProfileImageService {
             }
             
             if let data = data {
-                
                 do {
                     let decoder = JSONDecoder()
                     decoder.keyDecodingStrategy = .convertFromSnakeCase
                     let user = try decoder.decode(UserResult.self, from: data)
-                    print(user.profileImage.small)
 
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
                         completion(.success(user.profileImage.small))
-                        self.avatarURL = user.profileImage.small
                         
                     }
                 } catch {
@@ -71,7 +70,7 @@ final class ProfileImageService {
                 }
             }
         }
-        
+        self.task = task
         task.resume()
     }
 }
