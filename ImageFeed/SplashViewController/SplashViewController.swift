@@ -58,6 +58,22 @@ final class SplashViewController: UIViewController {
         let tabBar = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "TabBarViewController")
         window.rootViewController = tabBar
     }
+    
+    private func showAlert() {
+        let alertController = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert
+        )
+        
+        let action = UIAlertAction(title: "Ок", style: .cancel) { [weak self] _ in
+            guard let self = self else { return }
+            self.performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
+        }
+        
+        alertController.addAction(action)
+        present(alertController, animated: true)
+    }
 }
 
 //MARK: - AuthViewControllerDelegate
@@ -81,7 +97,8 @@ extension SplashViewController: AuthViewControllerDelegate {
                 fetchProfile(with: token)
             case .failure(let error):
                 UIBlockingProgressHUD.dismiss()
-                assertionFailure(error.localizedDescription)
+                print(error.localizedDescription)
+                showAlert()
             }
         }
     }
