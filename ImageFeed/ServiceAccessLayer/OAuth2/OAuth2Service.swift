@@ -18,16 +18,6 @@ final class OAuth2Service {
         let createdAt: Int
     }
     
-    enum NetworkError: Error {
-        case httpStatusCode(Int)
-        case urlRequestError(Error)
-        case urlSessionError(Error)
-    }
-    
-    enum ParseError: Error {
-        case decodeError(Error)
-    }
-    
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
     private var lastCode: String?

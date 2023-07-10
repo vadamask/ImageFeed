@@ -17,16 +17,6 @@ final class ProfileImageService {
         let small: String
     }
     
-    private enum NetworkError: Error {
-        case httpStatusCode(Int)
-        case urlRequestError(Error)
-        case urlSessionError(Error)
-    }
-    
-    private enum ParseError: Error {
-        case decodeError(Error)
-    }
-    
     private var task: URLSessionTask?
     private(set) var avatarURL: String?
     

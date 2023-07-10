@@ -22,6 +22,7 @@
 		DD6AAC9A2A598FD80084D92F /* URLRequest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6AAC992A598FD80084D92F /* URLRequest+Extensions.swift */; };
 		DD6AAC9C2A59E9200084D92F /* ProfileImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6AAC9B2A59E9200084D92F /* ProfileImageService.swift */; };
 		DD6AACA22A5BED090084D92F /* AuthFlowNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6AACA12A5BED090084D92F /* AuthFlowNavigationController.swift */; };
+		DD6AACA42A5BF9130084D92F /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6AACA32A5BF9130084D92F /* Errors.swift */; };
 		DD8107352A470C5700FD870C /* OAuth2Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8107342A470C5700FD870C /* OAuth2Service.swift */; };
 		DD8107372A471BF400FD870C /* OAuth2TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8107362A471BF400FD870C /* OAuth2TokenStorage.swift */; };
 		DD81073A2A4820E200FD870C /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8107392A4820E200FD870C /* SplashViewController.swift */; };
@@ -48,6 +49,7 @@
 		DD6AAC992A598FD80084D92F /* URLRequest+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+Extensions.swift"; sourceTree = "<group>"; };
 		DD6AAC9B2A59E9200084D92F /* ProfileImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageService.swift; sourceTree = "<group>"; };
 		DD6AACA12A5BED090084D92F /* AuthFlowNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowNavigationController.swift; sourceTree = "<group>"; };
+		DD6AACA32A5BF9130084D92F /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		DD8107342A470C5700FD870C /* OAuth2Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2Service.swift; sourceTree = "<group>"; };
 		DD8107362A471BF400FD870C /* OAuth2TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2TokenStorage.swift; sourceTree = "<group>"; };
 		DD8107392A4820E200FD870C /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 		DDA239AA2A44B2BC005A69E5 /* ServiceAccessLayer */ = {
 			isa = PBXGroup;
 			children = (
+				DD6AACA32A5BF9130084D92F /* Errors.swift */,
 				DD6AAC962A59855F0084D92F /* ProfileService */,
 				DD04BC4F2A4A148A0028EF6D /* OAuth2 */,
 			);
@@ -297,6 +300,7 @@
 				DDA239AC2A44B2F4005A69E5 /* AuthViewController.swift in Sources */,
 				DDA239A92A44AC28005A69E5 /* Constants.swift in Sources */,
 				DD6AACA22A5BED090084D92F /* AuthFlowNavigationController.swift in Sources */,
+				DD6AACA42A5BF9130084D92F /* Errors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
