@@ -19,12 +19,14 @@ final class ProfileImageService {
     
     private var task: URLSessionTask?
     private(set) var avatarURL: String?
+    private let urlSession = URLSession.shared
     
     static let DidChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     static let shared = ProfileImageService()
     
     func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {
         
+        assert(Thread.isMainThread)
         task?.cancel()
         
         guard var request = URLRequest.makeHTTPRequest(path: "/users/\(username)", httpMethod: "GET"),
@@ -34,46 +36,23 @@ final class ProfileImageService {
         }
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
+            guard let self = self else { return }
             
-            if let error = error {
-                DispatchQueue.main.async {
-                    completion(.failure(NetworkError.urlSessionError(error)))
-                }
-            }
-            
-            if let response = response as? HTTPURLResponse {
-                assert(response.statusCode != 401, "Failed with bearer token")
+            switch result {
+            case .success(let user):
+                completion(.success(user.profileImage.small))
+                NotificationCenter.default.post(
+                    name: ProfileImageService.DidChangeNotification,
+                    object: self,
+                    userInfo: ["URL": user.profileImage.small]
+                )
+                self.avatarURL = user.profileImage.small
+                self.task = nil
                 
-                if response.statusCode != 200 {
-                    DispatchQueue.main.async {
-                        completion(.failure(NetworkError.httpStatusCode(response.statusCode)))
-                    }
-                }
-            }
-            
-            if let data = data {
-                do {
-                    let decoder = JSONDecoder()
-                    decoder.keyDecodingStrategy = .convertFromSnakeCase
-                    let user = try decoder.decode(UserResult.self, from: data)
-
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self = self else { return }
-                        completion(.success(user.profileImage.small))
-                        
-                        NotificationCenter.default.post(
-                            name: ProfileImageService.DidChangeNotification,
-                            object: self,
-                            userInfo: ["URL": user.profileImage.small]
-                        )
-                        self.avatarURL = user.profileImage.small
-                    }
-                } catch {
-                    DispatchQueue.main.async {
-                        completion(.failure(ParseError.decodeError(error)))
-                    }
-                }
+            case .failure(let error):
+                self.task = nil
+                completion(.failure(error))
             }
         }
         self.task = task

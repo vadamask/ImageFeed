@@ -17,10 +17,13 @@ final class OAuth2Service {
         let scope: String
         let createdAt: Int
     }
-    
+
     private let urlSession = URLSession.shared
-    private var task: URLSessionTask?
     private var lastCode: String?
+    private var task: URLSessionTask?
+    
+    static let shared = OAuth2Service()
+    var isLoading = false
     
     func fetchAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
         
@@ -35,43 +38,20 @@ final class OAuth2Service {
             return
         }
         
-        let task = urlSession.dataTask(with: request) { data, response, error in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+            guard let self = self else { return }
             
-            if let error = error {
-                DispatchQueue.main.async {
-                    completion(.failure(NetworkError.urlSessionError(error)))
-                    self.lastCode = nil
-                }
-                return
-            }
-            
-            if let response = response as? HTTPURLResponse {
-                if response.statusCode < 200 || response.statusCode >= 300 {
-                    DispatchQueue.main.async {
-                        completion(.failure(NetworkError.httpStatusCode(response.statusCode)))
-                        self.lastCode = nil
-                    }
-                    return
-                }
-            }
-            
-            if let data = data {
-                do {
-                    let decoder = JSONDecoder()
-                    decoder.keyDecodingStrategy = .convertFromSnakeCase
-                    let responseBody = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                    DispatchQueue.main.async {
-                        completion(.success(responseBody.accessToken))
-                        self.task = nil
-                    }
-                } catch {
-                    DispatchQueue.main.async {
-                        completion(.failure(ParseError.decodeError(error)))
-                        self.task = nil
-                    }
-                }
+            switch result {
+            case .success(let tokenResponseBody):
+                completion(.success(tokenResponseBody.accessToken))
+                self.task = nil
+            case .failure(let error):
+                self.lastCode = nil
+                self.task = nil
+                completion(.failure(error))
             }
         }
+        
         self.task = task
         task.resume()
     }
