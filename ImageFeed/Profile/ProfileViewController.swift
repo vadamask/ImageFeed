@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
@@ -13,9 +14,6 @@ final class ProfileViewController: UIViewController {
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "Photo")
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = imageView.frame.width / 2
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -79,9 +77,6 @@ final class ProfileViewController: UIViewController {
         view.backgroundColor = .ypBlack
         setupConstraints()
         updateProfileDetails()
-        
-        if let avavtarURL = ProfileImageService.shared.avatarURL,
-           let url = URL(string: avavtarURL) {}
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -92,6 +87,17 @@ final class ProfileViewController: UIViewController {
         nameLabel.text = profileService.profile?.name
         userNameLabel.text = profileService.profile?.loginName
         descriptionLabel.text = profileService.profile?.bio
+        
+        if let avavtarURL = ProfileImageService.shared.avatarURL,
+           let url = URL(string: avavtarURL) {
+            let processor = RoundCornerImageProcessor(cornerRadius: 25)
+            
+            profileImageView.kf.setImage(
+                with: url,
+                placeholder: UIImage(named: "placeholder"),
+                options: [.processor(processor), .transition(.fade(1))]
+            )
+        }
     }
     
     private func setupConstraints() {
