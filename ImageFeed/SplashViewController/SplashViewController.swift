@@ -54,12 +54,12 @@ final class SplashViewController: UIViewController {
     }
     
     private func switchToTabBarController() {
-        let window = UIApplication.shared.windows.first!
         let tabBarController = TabBarController()
-        tabBarController.modalPresentationStyle = .fullScreen
         tabBarController.tabBar.isTranslucent = false
         tabBarController.tabBar.barTintColor = .ypBlack
         tabBarController.tabBar.tintColor = .ypWhite
+        
+        let window = UIApplication.shared.windows.first!
         window.rootViewController = tabBarController
     }
     
@@ -77,9 +77,6 @@ final class SplashViewController: UIViewController {
         
         alertController.addAction(action)
         present(alertController, animated: true)
-    }
-    deinit {
-        print("SPLASH DEL")
     }
 }
 

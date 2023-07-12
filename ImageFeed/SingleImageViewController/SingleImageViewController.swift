@@ -62,8 +62,8 @@ final class SingleImageViewController: UIViewController {
         view.backgroundColor = .ypBlack
         scrollView.delegate = self
         imageView.image = image
-        rescaleAndCenterImageInScrollView(image: image)
         setupConstraints()
+        rescaleAndCenterImageInScrollView(image: image)
     }
     
     private func setupConstraints() {
@@ -77,13 +77,6 @@ final class SingleImageViewController: UIViewController {
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
             scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
-            
-            imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-            imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
-            imageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-            imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
-            imageView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: 0),
-            imageView.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor, constant: 0),
             
             backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 9),
@@ -122,7 +115,11 @@ final class SingleImageViewController: UIViewController {
     
     @objc
     private func didTapShareButton() {
-        let activityVC = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        guard let image = image else { return }
+        let activityVC = UIActivityViewController(
+            activityItems: [image],
+            applicationActivities: nil
+        )
         present(activityVC, animated: true)
     }
 }

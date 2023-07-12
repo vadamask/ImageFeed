@@ -56,25 +56,15 @@ final class ProfileViewController: UIViewController {
         return button
     }()
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        
-        addObserver()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        addObserver()
-    }
-    
     deinit {
         removeObserver()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+       
         view.backgroundColor = .ypBlack
+        addObserver()
         setupConstraints()
         updateProfileDetails()
     }
@@ -88,16 +78,22 @@ final class ProfileViewController: UIViewController {
         userNameLabel.text = profileService.profile?.loginName
         descriptionLabel.text = profileService.profile?.bio
         
-        if let avavtarURL = ProfileImageService.shared.avatarURL,
-           let url = URL(string: avavtarURL) {
-            let processor = RoundCornerImageProcessor(cornerRadius: 25)
-            
-            profileImageView.kf.setImage(
-                with: url,
-                placeholder: UIImage(named: "placeholder"),
-                options: [.processor(processor), .transition(.fade(1))]
-            )
+        if let imageURL = ProfileImageService.shared.avatarURL,
+           let url = URL(string: imageURL) {
+               setAvatar(url)
         }
+    }
+    
+    private func setAvatar(_ url: URL) {
+        let cache = ImageCache.default
+        cache.clearDiskCache()
+        let processor = RoundCornerImageProcessor(cornerRadius: 25)
+        
+        profileImageView.kf.setImage(
+            with: url,
+            placeholder: UIImage(named: "placeholder"),
+            options: [.processor(processor), .transition(.fade(1))]
+        )
     }
     
     private func setupConstraints() {
@@ -147,15 +143,19 @@ final class ProfileViewController: UIViewController {
         )
     }
     
-    @objc private func updateAvatar(notification: Notification) {
+    @objc
+    private func updateAvatar(notification: Notification) {
         guard
             isViewLoaded,
             let userInfo = notification.userInfo,
             let profileImageURL = userInfo["URL"] as? String,
             let url = URL(string: profileImageURL)
         else { return }
+        
+        setAvatar(url)
     }
     
-    @objc private func logOutButtonPressed() {}
+    @objc
+    private func logOutButtonPressed() {}
     
 }
