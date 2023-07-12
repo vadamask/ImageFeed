@@ -17,7 +17,7 @@ protocol WebViewViewControllerDelegate: AnyObject {
 
 final class WebViewViewController: UIViewController {
     
-    private var webView: WKWebView = {
+    private let webView: WKWebView = {
         let webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.backgroundColor = .ypWhite
@@ -25,7 +25,7 @@ final class WebViewViewController: UIViewController {
         return webView
     }()
     
-    private var backButton: UIButton = {
+    private let backButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("", for: .normal)
@@ -34,7 +34,7 @@ final class WebViewViewController: UIViewController {
         return button
     }()
     
-    private var progressView: UIProgressView = {
+    private let progressView: UIProgressView = {
         let progressView = UIProgressView()
         progressView.translatesAutoresizingMaskIntoConstraints = false
         progressView.progressTintColor = .ypBlack
@@ -118,7 +118,6 @@ final class WebViewViewController: UIViewController {
     }
     
     deinit {
-        print("WEB DELETED")
         clean()
     }
 }

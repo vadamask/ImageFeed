@@ -9,18 +9,23 @@ import UIKit
 
 final class SplashViewController: UIViewController {
     
-    private var imageView: UIImageView = {
+    private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(named: "logo_practicum")
         return imageView
     }()
+    
     private var networkService = OAuth2Service.shared
     private let profileService = ProfileService.shared
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         view.backgroundColor = .ypBlack
         view.addSubview(imageView)
         NSLayoutConstraint.activate([
@@ -41,25 +46,21 @@ final class SplashViewController: UIViewController {
         }
     }
     
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        .lightContent
-    }
-    
     private func switchToAuthViewController() {
         let authVC = AuthViewController()
-        
         authVC.delegate = self
         authVC.modalPresentationStyle = .fullScreen
         present(authVC, animated: true)
     }
     
     private func switchToTabBarController() {
-        guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("Invalid Configuration")
-            return
-        }
-        let tabBar = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "TabBarViewController")
-        window.rootViewController = tabBar
+        let window = UIApplication.shared.windows.first!
+        let tabBarController = TabBarController()
+        tabBarController.modalPresentationStyle = .fullScreen
+        tabBarController.tabBar.isTranslucent = false
+        tabBarController.tabBar.barTintColor = .ypBlack
+        tabBarController.tabBar.tintColor = .ypWhite
+        window.rootViewController = tabBarController
     }
     
     private func showAlert() {
@@ -78,7 +79,7 @@ final class SplashViewController: UIViewController {
         present(alertController, animated: true)
     }
     deinit {
-        print("DELETED SPLASH")
+        print("SPLASH DEL")
     }
 }
 

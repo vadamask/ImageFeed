@@ -13,14 +13,14 @@ protocol AuthViewControllerDelegate: AnyObject {
 
 final class AuthViewController: UIViewController {
     
-    private var logoImageView: UIImageView = {
+    private let logoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(named: "logo_of_unsplash")
         return imageView
     }()
     
-    private var button: UIButton = {
+    private let button: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .ypWhite
@@ -69,9 +69,6 @@ final class AuthViewController: UIViewController {
             button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             button.heightAnchor.constraint(equalToConstant: 48)
         ])
-    }
-    deinit {
-        print("AUTH DELETED")
     }
 }
 
