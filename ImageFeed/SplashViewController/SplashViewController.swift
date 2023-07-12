@@ -46,9 +46,8 @@ final class SplashViewController: UIViewController {
     }
     
     private func switchToAuthViewController() {
-        guard let authVC = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController
-        else { return }
+        let authVC = AuthViewController()
+        
         authVC.delegate = self
         authVC.modalPresentationStyle = .fullScreen
         present(authVC, animated: true)

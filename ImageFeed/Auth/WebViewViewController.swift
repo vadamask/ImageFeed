@@ -17,9 +17,32 @@ protocol WebViewViewControllerDelegate: AnyObject {
 
 final class WebViewViewController: UIViewController {
     
-    @IBOutlet private var webView: WKWebView!
-    @IBOutlet private var backButton: UIButton!
-    @IBOutlet private var progressView: UIProgressView!
+    private var webView: WKWebView = {
+        let webView = WKWebView()
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.backgroundColor = .ypWhite
+        webView.isOpaque = false
+        return webView
+    }()
+    
+    private var backButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("", for: .normal)
+        button.setImage(UIImage(named: "nav_back_button"), for: .normal)
+        button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
+        return button
+    }()
+    
+    private var progressView: UIProgressView = {
+        let progressView = UIProgressView()
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        progressView.progressTintColor = .ypBlack
+        progressView.progress = 0.0
+        progressView.isHidden = true
+        return progressView
+    }()
+    
     weak var delegate: WebViewViewControllerDelegate?
     
     private var estimatedProgressObservation: NSKeyValueObservation?
@@ -28,7 +51,8 @@ final class WebViewViewController: UIViewController {
         super.viewDidLoad()
         
         webView.navigationDelegate = self
-        setupViews()
+        view.backgroundColor = .ypWhite
+        setupConstraints()
         makeRequest()
         
         estimatedProgressObservation = webView.observe(\.estimatedProgress) { [weak self] _, _ in
@@ -46,17 +70,26 @@ final class WebViewViewController: UIViewController {
         progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
     }
     
-    private func setupViews() {
-        progressView.progressTintColor = .ypBlack
-        progressView.progress = 0.0
-        progressView.isHidden = true
+    private func setupConstraints() {
+        view.addSubview(webView)
+        view.addSubview(backButton)
+        view.addSubview(progressView)
         
-        webView.backgroundColor = .ypWhite
-        webView.isOpaque = false
-        
-        
-        backButton.setTitle("", for: .normal)
-        backButton.setImage(UIImage(named: "nav_back_button"), for: .normal)
+        NSLayoutConstraint.activate([
+            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 43),
+            webView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
+            
+            backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 8),
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 9),
+            backButton.widthAnchor.constraint(equalToConstant: 24),
+            backButton.heightAnchor.constraint(equalToConstant: 24),
+            
+            progressView.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 0),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0)
+        ])
     }
     
     private func makeRequest() {
@@ -79,11 +112,13 @@ final class WebViewViewController: UIViewController {
         }
     }
     
-    @IBAction private func didTapBackButton(_ sender: Any?) {
+    @objc
+    private func didTapBackButton() {
         delegate?.webViewViewControllerDidCancel(self)
     }
     
     deinit {
+        print("WEB DELETED")
         clean()
     }
 }

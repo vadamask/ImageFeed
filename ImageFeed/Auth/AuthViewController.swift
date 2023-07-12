@@ -13,44 +13,66 @@ protocol AuthViewControllerDelegate: AnyObject {
 
 final class AuthViewController: UIViewController {
     
-    @IBOutlet private var logoImageView: UIImageView!
-    @IBOutlet private var button: UIButton!
-    private let showWebViewSegueIdentifier = "ShowWebView"
+    private var logoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(named: "logo_of_unsplash")
+        return imageView
+    }()
     
-    weak var delegate: AuthViewControllerDelegate?
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        setupViews()
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showWebViewSegueIdentifier {
-            guard let webViewVC = segue.destination as? WebViewViewController else {
-                assertionFailure("Failed to prepare for \(showWebViewSegueIdentifier)")
-                return
-            }
-            webViewVC.delegate = self
-        }
-    }
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        .lightContent
-    }
-    
-    private func setupViews() {
-        view.backgroundColor = .ypBlack
-        logoImageView.image = UIImage(named: "logo_of_unsplash")
-        
+    private var button: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .ypWhite
         button.layer.cornerRadius = 16
         button.setTitle("Войти", for: .normal)
         button.setTitleColor(.ypBlack, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        return button
+    }()
+    
+    weak var delegate: AuthViewControllerDelegate?
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
     }
     
-    @IBAction private func buttonTapped() {}
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .ypBlack
+        setupConstraints()
+    }
+    
+    @objc
+    private func buttonTapped() {
+        let webViewVC = WebViewViewController()
+        webViewVC.delegate = self
+        webViewVC.modalPresentationStyle = .fullScreen
+        present(webViewVC, animated: true)
+    }
+    
+    private func setupConstraints() {
+        view.addSubview(logoImageView)
+        view.addSubview(button)
+        
+        NSLayoutConstraint.activate([
+            logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            logoImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            logoImageView.widthAnchor.constraint(equalToConstant: 60),
+            logoImageView.heightAnchor.constraint(equalToConstant: 60),
+            
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -90),
+            button.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            button.heightAnchor.constraint(equalToConstant: 48)
+        ])
+    }
+    deinit {
+        print("AUTH DELETED")
+    }
 }
 
 //MARK: - WebViewViewControllerDelegate
