@@ -23,7 +23,7 @@ final class ProfileImageService {
     private(set) var avatarURL: String?
     private let urlSession = URLSession.shared
     
-    static let DidChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     static let shared = ProfileImageService()
     
     func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {
@@ -32,7 +32,7 @@ final class ProfileImageService {
         task?.cancel()
         
         guard var request = URLRequest.makeHTTPRequest(path: "/users/\(username)", httpMethod: "GET"),
-              let token = OAuth2TokenStorage.token else {
+              let token = OAuth2TokenStorage.bearerToken else {
             assertionFailure("Failed to make HTTP request")
             return
         }
@@ -45,17 +45,15 @@ final class ProfileImageService {
             case .success(let user):
                 completion(.success(user.profileImage.medium))
                 NotificationCenter.default.post(
-                    name: ProfileImageService.DidChangeNotification,
+                    name: ProfileImageService.didChangeNotification,
                     object: self,
                     userInfo: ["URL": user.profileImage.medium]
                 )
                 self.avatarURL = user.profileImage.medium
-                self.task = nil
-                
             case .failure(let error):
-                self.task = nil
                 completion(.failure(error))
             }
+            self.task = nil
         }
         self.task = task
         task.resume()

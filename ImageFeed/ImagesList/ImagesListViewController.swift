@@ -11,6 +11,7 @@ final class ImagesListViewController: UIViewController {
     
     private let tableView: UITableView = {
         let tableView = UITableView()
+        tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = .ypBlack
         tableView.separatorStyle = .none
@@ -18,7 +19,13 @@ final class ImagesListViewController: UIViewController {
         return tableView
     }()
     
-    private let showSingleImageSegueIdentifer = "ShowSingleImage"
+    private lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.timeStyle = .none
+        return formatter
+    }()
+    
     private let photosName = Array(0...20).map { "\($0)" }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -31,10 +38,8 @@ final class ImagesListViewController: UIViewController {
         view.backgroundColor = .ypBlack
         setupTableView()
     }
-    
 
     private func setupTableView() {
-        tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -63,7 +68,12 @@ extension ImagesListViewController: UITableViewDataSource {
         guard let imageListCell = cell as? ImagesListCell else {
             preconditionFailure("Casting error")
         }
-        imageListCell.config(with: indexPath)
+        let model = ImagesListCell.ImagesListCellModel(
+            image: UIImage(named: "\(indexPath.row)"),
+            likeButton: (indexPath.row % 2 != 0) ? UIImage(named: "like_active") : UIImage(named: "like_disable"),
+            date: dateFormatter.string(from: Date())
+        )
+        imageListCell.configure(with: model)
         return imageListCell
     }
 }

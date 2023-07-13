@@ -8,8 +8,6 @@
 import UIKit
 import WebKit
 
-fileprivate let UnsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
-
 protocol WebViewViewControllerDelegate: AnyObject {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String)
     func webViewViewControllerDidCancel(_ vc: WebViewViewController)
@@ -93,15 +91,15 @@ final class WebViewViewController: UIViewController {
     }
     
     private func makeRequest() {
-        guard var urlComponents = URLComponents(string: UnsplashAuthorizeURLString) else {
-            assertionFailure("Failed to make urlComponents from \(UnsplashAuthorizeURLString)")
+        guard var urlComponents = URLComponents(string: Constants.unsplashAuthorizeURLString) else {
+            assertionFailure("Failed to make urlComponents from \(Constants.unsplashAuthorizeURLString)")
             return
         }
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: AccessKey),
-            URLQueryItem(name: "redirect_uri", value: RedirectURI),
+            URLQueryItem(name: "client_id", value: Constants.accessKey),
+            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
             URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: AccessScope)
+            URLQueryItem(name: "scope", value: Constants.accessScope)
         ]
         if let url = urlComponents.url {
             let request = URLRequest(url: url)

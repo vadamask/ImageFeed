@@ -8,6 +8,13 @@
 import UIKit
 
 final class ImagesListCell: UITableViewCell {
+    
+    struct ImagesListCellModel {
+        let image: UIImage?
+        let likeButton: UIImage?
+        let date: String
+    }
+    
     static let reuseIdentifier = "ImagesListCell"
     
     private let mainView: UIView = {
@@ -29,7 +36,6 @@ final class ImagesListCell: UITableViewCell {
     private let likeButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.tintColor = .ypRed
         button.setTitle("", for: .normal)
         return button
     }()
@@ -42,15 +48,10 @@ final class ImagesListCell: UITableViewCell {
         return label
     }()
     
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .none
-        return formatter
-    }()
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.backgroundColor = .ypBlack
+        self.selectionStyle = .none
         
         contentView.addSubview(mainView)
         mainView.addSubview(cellImageView)
@@ -84,21 +85,9 @@ final class ImagesListCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func config(with indexPath: IndexPath) {
-        
-        self.backgroundColor = .ypBlack
-        dateLabel.text = dateFormatter.string(from: Date())
-        
-        if let image = UIImage(named: "\(indexPath.row)") {
-            cellImageView.image = image
-        } else {
-            preconditionFailure("Image Not Found")
-        }
-
-        if indexPath.row % 2 != 0 {
-            likeButton.setImage(UIImage(named: "like_active"), for: .normal)
-        } else {
-            likeButton.setImage(UIImage(named: "like_disable"), for: .normal)
-        }
+    func configure(with model: ImagesListCellModel) {
+        cellImageView.image = model.image
+        dateLabel.text = model.date
+        likeButton.setImage(model.likeButton, for: .normal)
     }
 }

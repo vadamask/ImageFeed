@@ -9,13 +9,18 @@ import Foundation
 import SwiftKeychainWrapper
 
 struct OAuth2TokenStorage {
-    static var token: String? {
+    static private let tokenKey = "token"
+    
+    static var bearerToken: String? {
         get {
-            KeychainWrapper.standard.string(forKey: "token")
+            KeychainWrapper.standard.string(forKey: tokenKey)
         }
         set {
-            assert(newValue != "", "token is wrong")
-            KeychainWrapper.standard.set(newValue!, forKey: "token")
+            guard let newValue = newValue else {
+                assertionFailure("token is wrong")
+                return
+            }
+            KeychainWrapper.standard.set(newValue, forKey: tokenKey)
         }
     }
 }

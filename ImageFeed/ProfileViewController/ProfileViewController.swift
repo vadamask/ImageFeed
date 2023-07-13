@@ -74,9 +74,11 @@ final class ProfileViewController: UIViewController {
     }
     
     private func updateProfileDetails() {
-        nameLabel.text = profileService.profile?.name
-        userNameLabel.text = profileService.profile?.loginName
-        descriptionLabel.text = profileService.profile?.bio
+        
+        guard let profile = profileService.profile else { return }
+        nameLabel.text = "\(profile.firstName) \(profile.lastName ?? "")"
+        userNameLabel.text = "@\(profile.username)"
+        descriptionLabel.text = profile.bio
         
         if let imageURL = ProfileImageService.shared.avatarURL,
            let url = URL(string: imageURL) {
@@ -130,7 +132,7 @@ final class ProfileViewController: UIViewController {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(updateAvatar(notification:)),
-            name: ProfileImageService.DidChangeNotification,
+            name: ProfileImageService.didChangeNotification,
             object: nil
         )
     }
@@ -138,7 +140,7 @@ final class ProfileViewController: UIViewController {
     private func removeObserver() {
         NotificationCenter.default.removeObserver(
             self,
-            name: ProfileImageService.DidChangeNotification,
+            name: ProfileImageService.didChangeNotification,
             object: nil
         )
     }

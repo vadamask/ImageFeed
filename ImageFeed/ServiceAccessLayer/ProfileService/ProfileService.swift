@@ -9,27 +9,20 @@ import Foundation
 
 final class ProfileService {
     
-    private struct ProfileResult: Decodable {
+    struct ProfileResult: Decodable {
         let username: String
         let firstName: String
-        let lastName: String
-        let bio: String
-    }
-    
-    struct ProfileViewModel {
-        let username: String
-        let name: String
-        let loginName: String
-        let bio: String
+        var lastName: String?
+        var bio: String?
     }
     
     private var task: URLSessionTask?
     private let urlSession = URLSession.shared
-    private(set) var profile: ProfileViewModel?
+    private(set) var profile: ProfileResult?
     
     static let shared = ProfileService()
     
-    func fetchProfile(_ token: String, completion: @escaping (Result<ProfileViewModel, Error>) -> Void) {
+    func fetchProfile(_ token: String, completion: @escaping (Result<ProfileResult, Error>) -> Void) {
         
         assert(Thread.isMainThread)
         task?.cancel()
@@ -45,19 +38,12 @@ final class ProfileService {
             
             switch result {
             case .success(let profileResult):
-                let profile = ProfileViewModel(
-                    username: profileResult.username,
-                    name: "\(profileResult.firstName) \(profileResult.lastName)",
-                    loginName: "@\(profileResult.username)",
-                    bio: profileResult.bio
-                )
-                completion(.success(profile))
-                self.profile = profile
-                self.task = nil
+                self.profile = profileResult
+                completion(.success(profileResult))
             case .failure(let error):
-                self.task = nil
                 completion(.failure(error))
             }
+            self.task = nil
         }
         self.task = task
         task.resume()
