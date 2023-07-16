@@ -18,6 +18,7 @@ final class SplashViewController: UIViewController {
     
     private let networkService = OAuth2Service.shared
     private let profileService = ProfileService.shared
+    private let tokenStorage = OAuth2TokenStorage.shared
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
@@ -37,7 +38,7 @@ final class SplashViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if let token = OAuth2TokenStorage.bearerToken {
+        if let token = tokenStorage.bearerToken {
             fetchProfile(with: token)
         } else {
             if !networkService.isLoading {
@@ -63,10 +64,10 @@ final class SplashViewController: UIViewController {
         window.rootViewController = tabBarController
     }
     
-    private func showAlert() {
+    private func showAlert(with error: Error) {
         let alertController = UIAlertController(
             title: "Что-то пошло не так",
-            message: "Не удалось войти в систему",
+            message: "Не удалось войти в систему\n" + error.localizedDescription,
             preferredStyle: .alert
         )
         
@@ -97,12 +98,11 @@ extension SplashViewController: AuthViewControllerDelegate {
             guard let self = self else { return }
             switch result {
             case .success(let token):
-                OAuth2TokenStorage.bearerToken = token
+                tokenStorage.bearerToken = token
                 fetchProfile(with: token)
             case .failure(let error):
                 UIBlockingProgressHUD.dismiss()
-                print(error.localizedDescription)
-                showAlert()
+                showAlert(with: error)
             }
         }
     }
@@ -119,8 +119,7 @@ extension SplashViewController: AuthViewControllerDelegate {
                 UIBlockingProgressHUD.dismiss()
             case .failure(let error):
                 UIBlockingProgressHUD.dismiss()
-                print(error.localizedDescription)
-                showAlert()
+                showAlert(with: error)
             }
         }
     }

@@ -22,6 +22,7 @@ final class ProfileImageService {
     private var task: URLSessionTask?
     private(set) var avatarURL: String?
     private let urlSession = URLSession.shared
+    private let tokenStorage = OAuth2TokenStorage.shared
     
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     static let shared = ProfileImageService()
@@ -32,7 +33,7 @@ final class ProfileImageService {
         task?.cancel()
         
         guard var request = URLRequest.makeHTTPRequest(path: "/users/\(username)", httpMethod: "GET"),
-              let token = OAuth2TokenStorage.bearerToken else {
+              let token = tokenStorage.bearerToken else {
             assertionFailure("Failed to make HTTP request")
             return
         }
@@ -40,6 +41,7 @@ final class ProfileImageService {
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
             guard let self = self else { return }
+            self.task = nil
             
             switch result {
             case .success(let user):
@@ -53,7 +55,6 @@ final class ProfileImageService {
             case .failure(let error):
                 completion(.failure(error))
             }
-            self.task = nil
         }
         self.task = task
         task.resume()
