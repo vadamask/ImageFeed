@@ -8,8 +8,6 @@
 import UIKit
 import WebKit
 
-fileprivate let UnsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
-
 protocol WebViewViewControllerDelegate: AnyObject {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String)
     func webViewViewControllerDidCancel(_ vc: WebViewViewController)
@@ -17,37 +15,52 @@ protocol WebViewViewControllerDelegate: AnyObject {
 
 final class WebViewViewController: UIViewController {
     
-    @IBOutlet private var webView: WKWebView!
-    @IBOutlet private var backButton: UIButton!
-    @IBOutlet private var progressView: UIProgressView!
+    private let webView: WKWebView = {
+        let webView = WKWebView()
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.backgroundColor = .ypWhite
+        webView.isOpaque = false
+        return webView
+    }()
+    
+    private let backButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("", for: .normal)
+        button.setImage(UIImage(named: "nav_back_button"), for: .normal)
+        button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
+        return button
+    }()
+    
+    private let progressView: UIProgressView = {
+        let progressView = UIProgressView()
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        progressView.progressTintColor = .ypBlack
+        progressView.progress = 0.0
+        progressView.isHidden = true
+        return progressView
+    }()
+    
     weak var delegate: WebViewViewControllerDelegate?
+    
+    private var estimatedProgressObservation: NSKeyValueObservation?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         webView.navigationDelegate = self
-        setupViews()
+        view.backgroundColor = .ypWhite
+        setupConstraints()
         makeRequest()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         
-        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
-    }
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == #keyPath(WKWebView.estimatedProgress) {
-            updateProgress()
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        estimatedProgressObservation = webView.observe(\.estimatedProgress) { [weak self] _, _ in
+            guard let self = self else { return }
+            self.updateProgress()
         }
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .darkContent
     }
     
     private func updateProgress() {
@@ -55,39 +68,55 @@ final class WebViewViewController: UIViewController {
         progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
     }
     
-    private func setupViews() {
-        progressView.progressTintColor = .ypBlack
-        progressView.progress = 0.0
-        progressView.isHidden = true
+    private func setupConstraints() {
+        view.addSubview(webView)
+        view.addSubview(backButton)
+        view.addSubview(progressView)
         
-        webView.backgroundColor = .ypWhite
-        webView.isOpaque = false
-        
-        
-        backButton.setTitle("", for: .normal)
-        backButton.setImage(UIImage(named: "nav_back_button"), for: .normal)
+        NSLayoutConstraint.activate([
+            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 43),
+            webView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
+            
+            backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 8),
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 9),
+            backButton.widthAnchor.constraint(equalToConstant: 24),
+            backButton.heightAnchor.constraint(equalToConstant: 24),
+            
+            progressView.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 0),
+            progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0)
+        ])
     }
     
     private func makeRequest() {
-        guard var urlComponents = URLComponents(string: UnsplashAuthorizeURLString) else {
-            fatalError("Failed to make urlComponents from \(UnsplashAuthorizeURLString)")
+        guard var urlComponents = URLComponents(string: Constants.unsplashAuthorizeURLString) else {
+            assertionFailure("Failed to make urlComponents from \(Constants.unsplashAuthorizeURLString)")
+            return
         }
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: AccessKey),
-            URLQueryItem(name: "redirect_uri", value: RedirectURI),
+            URLQueryItem(name: "client_id", value: Constants.accessKey),
+            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
             URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: AccessScope)
+            URLQueryItem(name: "scope", value: Constants.accessScope)
         ]
         if let url = urlComponents.url {
             let request = URLRequest(url: url)
             webView.load(request)
         } else {
-            fatalError("Failed to make URL from \(urlComponents)")
+            assertionFailure("Failed to make URL from \(urlComponents)")
+            return
         }
     }
     
-    @IBAction private func didTapBackButton(_ sender: Any?) {
+    @objc
+    private func didTapBackButton() {
         delegate?.webViewViewControllerDidCancel(self)
+    }
+    
+    deinit {
+        clean()
     }
 }
 
@@ -117,5 +146,14 @@ extension WebViewViewController: WKNavigationDelegate {
             return nil
         }
     }
+    
+    private func clean() {
+        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
+        
+        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
+            records.forEach { record in
+                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
+            }
+        }
+    }
 }
-

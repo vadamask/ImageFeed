@@ -9,18 +9,15 @@ import UIKit
 
 final class ImagesListViewController: UIViewController {
     
-    @IBOutlet private var tableView: UITableView! {
-        didSet {
-            tableView.delegate = self
-            tableView.dataSource = self
-            tableView.backgroundColor = UIColor.ypBlack
-            tableView.separatorStyle = .none
-            tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-        }
-    }
-    
-    private let photosName = Array(0..<20).map { "\($0)" }
-    private let showSingleImageSegueIdentifer = "ShowSingleImage"
+    private let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .ypBlack
+        tableView.separatorStyle = .none
+        tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        return tableView
+    }()
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -29,25 +26,31 @@ final class ImagesListViewController: UIViewController {
         return formatter
     }()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        view.backgroundColor = UIColor.ypBlack
-    }
+    private let photosName = Array(0...20).map { "\($0)" }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showSingleImageSegueIdentifer {
-            let viewController = segue.destination as! SingleImageViewController
-            let indexPath = sender as! IndexPath
-            let image = UIImage(named: photosName[indexPath.row])
-            viewController.image = image
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .ypBlack
+        setupTableView()
+    }
+
+    private func setupTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        view.addSubview(tableView)
+        
+        NSLayoutConstraint.activate([
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
+        ])
     }
 }
 
@@ -65,7 +68,12 @@ extension ImagesListViewController: UITableViewDataSource {
         guard let imageListCell = cell as? ImagesListCell else {
             preconditionFailure("Casting error")
         }
-        configCell(for: imageListCell, with: indexPath)
+        let model = ImagesListCell.ImagesListCellModel(
+            image: UIImage(named: "\(indexPath.row)"),
+            likeButton: (indexPath.row % 2 != 0) ? UIImage(named: "like_active") : UIImage(named: "like_disable"),
+            date: dateFormatter.string(from: Date())
+        )
+        imageListCell.configure(with: model)
         return imageListCell
     }
 }
@@ -90,56 +98,10 @@ extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        performSegue(withIdentifier: showSingleImageSegueIdentifer, sender: indexPath)
-    }
-}
-
-extension ImagesListViewController {
-    
-    private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
         
-        cell.backgroundColor = .ypBlack
-        cell.mainView.backgroundColor = .ypBlack
-        cell.mainView.clipsToBounds = true
-        cell.mainView.layer.cornerRadius = 16
-        
-        let imageName = photosName[indexPath.row]
-        if let image = UIImage(named: imageName) {
-            cell.cellImageView.image = image
-        } else {
-            preconditionFailure("Image Not Found")
-        }
-        cell.cellImageView.contentMode = .scaleAspectFill
-        
-        cell.dateLabel.textColor = .ypWhite
-        cell.dateLabel.font = .systemFont(ofSize: 13, weight: .regular)
-        cell.dateLabel.text = dateFormatter.string(from: Date())
-        
-        cell.likeButton.tintColor = .ypRed
-        cell.likeButton.setTitle("", for: .normal)
-        if indexPath.row % 2 != 0 {
-            cell.likeButton.setImage(UIImage(named: "like_active"), for: .normal)
-        } else {
-            cell.likeButton.setImage(UIImage(named: "like_disable"), for: .normal)
-        }
-        
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [
-            UIColor(red: 0.102, green: 0.106, blue: 0.133, alpha: 0).cgColor,
-            UIColor(red: 0.102, green: 0.106, blue: 0.133, alpha: 0.2).cgColor
-        ]
-        gradientLayer.locations = [0.0, 1.0]
-        gradientLayer.startPoint = CGPoint(x: 0.25, y: 0.5)
-        gradientLayer.endPoint = CGPoint(x: 0.75, y: 0.5)
-        gradientLayer.transform = CATransform3DMakeAffineTransform(CGAffineTransform(
-            a: 0, b: 0.54, c: -0.54, d: 0, tx: 0.77, ty: 0)
-        )
-        
-        gradientLayer.frame = cell.gradientView.bounds.insetBy(
-            dx: -0.5 * cell.gradientView.bounds.size.width,
-            dy: -0.5 * cell.gradientView.bounds.size.height
-        )
-        cell.gradientView.backgroundColor = .clear
-        cell.gradientView.layer.addSublayer(gradientLayer)
+        let singleImageVC = SingleImageViewController()
+        singleImageVC.modalPresentationStyle = .fullScreen
+        singleImageVC.image = UIImage(named: photosName[indexPath.row])
+        present(singleImageVC, animated: true)
     }
 }
