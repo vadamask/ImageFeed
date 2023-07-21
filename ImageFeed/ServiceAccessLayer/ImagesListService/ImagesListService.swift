@@ -82,10 +82,10 @@ final class ImagesListService {
                 }
                 DispatchQueue.main.async {
                     self.photos.append(contentsOf: mapPhotos)
+                    NotificationCenter.default.post(name: Self.didChangeNotification, object: self)
                 }
-                NotificationCenter.default.post(name: Self.didChangeNotification, object: self)
             case .failure(let error):
-                assertionFailure(error.localizedDescription)
+                assertionFailure(error.description(of: error))
             }
         }
         self.task = task

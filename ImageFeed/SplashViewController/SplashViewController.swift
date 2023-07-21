@@ -65,9 +65,12 @@ final class SplashViewController: UIViewController {
     }
     
     private func showAlert(with error: Error) {
+        
+        let message = "Не удалось войти в систему\n" + error.description(of: error)
+        
         let alertController = UIAlertController(
             title: "Что-то пошло не так",
-            message: "Не удалось войти в систему\n" + error.localizedDescription,
+            message: message,
             preferredStyle: .alert
         )
         
