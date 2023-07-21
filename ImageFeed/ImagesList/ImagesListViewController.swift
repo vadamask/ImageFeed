@@ -19,13 +19,6 @@ final class ImagesListViewController: UIViewController {
         return tableView
     }()
     
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .none
-        return formatter
-    }()
-    
     private let photosName = Array(0...20).map { "\($0)" }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -71,7 +64,7 @@ extension ImagesListViewController: UITableViewDataSource {
         let model = ImagesListCell.ImagesListCellModel(
             image: UIImage(named: "\(indexPath.row)"),
             likeButton: (indexPath.row % 2 != 0) ? UIImage(named: "like_active") : UIImage(named: "like_disable"),
-            date: dateFormatter.string(from: Date())
+            date: Date().description//dateFormatter.string(from: Date())
         )
         imageListCell.configure(with: model)
         return imageListCell

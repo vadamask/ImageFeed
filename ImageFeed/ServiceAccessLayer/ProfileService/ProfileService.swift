@@ -16,6 +16,7 @@ final class ProfileService {
         var bio: String?
     }
     
+    private init(){}
     private var task: URLSessionTask?
     private let urlSession = URLSession.shared
     private(set) var profile: ProfileResult?
