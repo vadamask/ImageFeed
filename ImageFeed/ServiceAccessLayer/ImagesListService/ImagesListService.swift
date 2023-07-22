@@ -36,8 +36,7 @@ final class ImagesListService {
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .none
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
         return formatter
     }()
     
@@ -51,6 +50,7 @@ final class ImagesListService {
     static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
     
     func fetchPhotosNextPage() {
+        
         assert(Thread.isMainThread)
         task?.cancel()
         
@@ -70,14 +70,14 @@ final class ImagesListService {
             
             switch result{
             case .success(let photosInfo):
-                let mapPhotos = photosInfo.map { parsePhotoInfo in
-                    Photo(id: parsePhotoInfo.id,
-                          size: CGSize(width: parsePhotoInfo.width, height: parsePhotoInfo.height),
-                          createdAt: self.dateFormatter.date(from: parsePhotoInfo.createdAt),
-                          welcomeDescription: parsePhotoInfo.description,
-                          thumbImageURL: parsePhotoInfo.urls.thumb,
-                          largeImageURL: parsePhotoInfo.urls.regular,
-                          isLiked: parsePhotoInfo.likedByUser
+                let mapPhotos = photosInfo.map {
+                    Photo(id: $0.id,
+                          size: CGSize(width: $0.width, height: $0.height),
+                          createdAt: self.dateFormatter.date(from: $0.createdAt),
+                          welcomeDescription: $0.description,
+                          thumbImageURL: $0.urls.thumb,
+                          largeImageURL: $0.urls.regular,
+                          isLiked: $0.likedByUser
                     )
                 }
                 DispatchQueue.main.async {

@@ -19,7 +19,10 @@ final class ImagesListViewController: UIViewController {
         return tableView
     }()
     
-    private let photosName = Array(0...20).map { "\($0)" }
+    private let imagesListService = ImagesListService.shared
+    private var imageListServiceObserver: NSObjectProtocol?
+    
+    var photos: [Photo] = []
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
@@ -30,6 +33,7 @@ final class ImagesListViewController: UIViewController {
         
         view.backgroundColor = .ypBlack
         setupTableView()
+        addObserver()
     }
 
     private func setupTableView() {
@@ -45,6 +49,31 @@ final class ImagesListViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
         ])
     }
+    
+    private func updateTableViewAnimated() {
+        let startIndex = photos.count
+        let lastIndex = imagesListService.photos.count-1
+        photos.append(contentsOf: imagesListService.photos[startIndex...lastIndex])
+        
+        let indexPaths = (startIndex...lastIndex).map {
+            IndexPath(row: $0, section: 0)
+        }
+        tableView.performBatchUpdates {
+            tableView.insertRows(at: indexPaths, with: .automatic)
+        }
+    }
+    
+    private func addObserver() {
+        imageListServiceObserver = NotificationCenter.default.addObserver(
+            forName: ImagesListService.didChangeNotification,
+            object: nil,
+            queue: .main,
+            using: { [weak self] _ in
+                guard let self = self else { return }
+                self.updateTableViewAnimated()
+            }
+        )
+    }
 }
 
 //MARK: - UITableViewDataSource
@@ -52,7 +81,7 @@ final class ImagesListViewController: UIViewController {
 extension ImagesListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photosName.count
+        return photos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -62,9 +91,9 @@ extension ImagesListViewController: UITableViewDataSource {
             preconditionFailure("Casting error")
         }
         let model = ImagesListCell.ImagesListCellModel(
-            image: UIImage(named: "\(indexPath.row)"),
-            likeButton: (indexPath.row % 2 != 0) ? UIImage(named: "like_active") : UIImage(named: "like_disable"),
-            date: Date().description//dateFormatter.string(from: Date())
+            imageURL: photos[indexPath.row].largeImageURL,
+            imageIsLiked: photos[indexPath.row].isLiked,
+            date: photos[indexPath.row].createdAt
         )
         imageListCell.configure(with: model)
         return imageListCell
@@ -76,25 +105,28 @@ extension ImagesListViewController: UITableViewDataSource {
 extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        guard let image = UIImage(named: "\(indexPath.row)") else {
-            preconditionFailure("Image Not Found")
-        }
+        let size = photos[indexPath.row].size
         let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
         let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
-        let imageWidth = image.size.width
+        let imageWidth = size.width
         let scale = imageViewWidth / imageWidth
-        let imageHeight = image.size.height * scale
+        let imageHeight = size.height * scale
         let imageViewHeight = imageHeight + imageInsets.top + imageInsets.bottom
         return imageViewHeight
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        
-        let singleImageVC = SingleImageViewController()
-        singleImageVC.modalPresentationStyle = .fullScreen
-        singleImageVC.image = UIImage(named: photosName[indexPath.row])
-        present(singleImageVC, animated: true)
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        tableView.deselectRow(at: indexPath, animated: true)
+//
+//        let singleImageVC = SingleImageViewController()
+//        singleImageVC.modalPresentationStyle = .fullScreen
+//        singleImageVC.image.kf.
+//        present(singleImageVC, animated: true)
+//    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == photos.count - 1 {
+            imagesListService.fetchPhotosNextPage()
+        }
     }
 }
