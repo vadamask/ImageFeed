@@ -9,13 +9,7 @@ import UIKit
 import Kingfisher
 
 final class ImagesListCell: UITableViewCell {
-    
-    struct ImagesListCellModel {
-        let imageURL: String
-        let imageIsLiked: Bool
-        let date: Date?
-    }
-    
+ 
     static let reuseIdentifier = "ImagesListCell"
     
     private let mainView: UIView = {

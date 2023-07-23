@@ -8,13 +8,6 @@
 import Foundation
 
 final class OAuth2Service {
-    
-    struct OAuthTokenResponseBody: Decodable {
-        let accessToken: String
-        let tokenType: String
-        let scope: String
-        let createdAt: Int
-    }
 
     static let shared = OAuth2Service()
     var isLoading = false

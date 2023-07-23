@@ -9,16 +9,6 @@ import Foundation
 
 final class ProfileImageService {
     
-    private struct UserResult: Decodable {
-        let profileImage: ProfileImage
-    }
-    
-    private struct ProfileImage: Decodable {
-        let small: String
-        let medium: String
-        let large: String
-    }
-    
     private init(){}
     private var task: URLSessionTask?
     private(set) var avatarURL: String?
@@ -40,7 +30,7 @@ final class ProfileImageService {
         }
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
-        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileImageResult, Error>) in
             guard let self = self else { return }
             self.task = nil
             

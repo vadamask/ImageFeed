@@ -22,7 +22,7 @@ final class ImagesListViewController: UIViewController {
     private let imagesListService = ImagesListService.shared
     private var imageListServiceObserver: NSObjectProtocol?
     
-    var photos: [Photo] = []
+    var photos: [PhotoModel] = []
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent

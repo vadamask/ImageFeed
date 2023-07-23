@@ -7,32 +7,7 @@
 
 import Foundation
 
-struct Photo {
-    let id: String
-    let size: CGSize
-    let createdAt: Date?
-    let welcomeDescription: String?
-    let thumbImageURL: String
-    let largeImageURL: String
-    let isLiked: Bool
-}
-
 final class ImagesListService {
-    
-    struct PhotoResult: Decodable {
-        let id: String
-        let width: Int
-        let height: Int
-        let createdAt: String
-        let description: String?
-        let urls: UrlsResult
-        let likedByUser: Bool
-    }
-    
-    struct UrlsResult: Decodable {
-        let thumb: String
-        let regular: String
-    }
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -41,7 +16,7 @@ final class ImagesListService {
     }()
     
     private init(){}
-    private (set) var photos: [Photo] = []
+    private (set) var photos: [PhotoModel] = []
     private var lastLoadedPage: Int?
     private var task: URLSessionTask?
     private let tokenStorage = OAuth2TokenStorage.shared
@@ -71,7 +46,7 @@ final class ImagesListService {
             switch result{
             case .success(let photosInfo):
                 let mapPhotos = photosInfo.map {
-                    Photo(id: $0.id,
+                    PhotoModel(id: $0.id,
                           size: CGSize(width: $0.width, height: $0.height),
                           createdAt: self.dateFormatter.date(from: $0.createdAt),
                           welcomeDescription: $0.description,
