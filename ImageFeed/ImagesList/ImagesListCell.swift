@@ -8,9 +8,14 @@
 import UIKit
 import Kingfisher
 
+protocol ImagesListCellDelegate: AnyObject {
+    func imagesListCellDidTapLike(_ cell: ImagesListCell)
+}
+
 final class ImagesListCell: UITableViewCell {
  
     static let reuseIdentifier = "ImagesListCell"
+    weak var delegate: ImagesListCellDelegate?
     
     private let mainView: UIView = {
         let view = UIView()
@@ -32,6 +37,7 @@ final class ImagesListCell: UITableViewCell {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("", for: .normal)
+        button.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -108,4 +114,9 @@ final class ImagesListCell: UITableViewCell {
         let like = model.imageIsLiked ? UIImage(named: "like_active") : UIImage(named: "like_disable")
         likeButton.setImage(like, for: .normal)
     }
+    
+    @objc private func likeButtonTapped() {
+        delegate?.imagesListCellDidTapLike(self)
+    }
+    
 }

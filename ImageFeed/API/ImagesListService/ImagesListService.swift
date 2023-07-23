@@ -24,7 +24,7 @@ final class ImagesListService {
     static let shared = ImagesListService()
     static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
     
-    func fetchPhotosNextPage() {
+    func fetchPhotosNextPage(_ completion: @escaping (Result<Void, Error>) -> Void) {
         
         assert(Thread.isMainThread)
         task?.cancel()
@@ -65,6 +65,63 @@ final class ImagesListService {
         }
         self.task = task
         lastLoadedPage = lastLoadedPage.number + 1
+        task.resume()
+    }
+    
+    func changeLike(photoId: String, isLike: Bool,_ completion: @escaping (Result<Void, Error>) -> Void) {
+        
+        var request: URLRequest?
+        
+        if isLike {
+            request = URLRequest.makeHTTPRequest(path: "/photos/\(photoId)/like", httpMethod: "DELETE")
+        } else {
+            request = URLRequest.makeHTTPRequest(path: "/photos/\(photoId)/like", httpMethod: "POST")
+        }
+        
+        guard var request = request,
+              let token = tokenStorage.bearerToken else {
+            assertionFailure("Failed to make HTTP request")
+            return
+        }
+        
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            guard let self = self else { return }
+            
+            if let error = error {
+                DispatchQueue.main.async {
+                    completion(.failure(NetworkError.urlSessionError(error)))
+                }
+            }
+            
+            if let response = response as? HTTPURLResponse {
+                if !(200..<300 ~= response.statusCode) {
+                    DispatchQueue.main.async {
+                        completion(.failure(NetworkError.httpStatusCode(response.statusCode)))
+                    }
+                }
+            }
+            
+            DispatchQueue.main.async {
+                if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+                    let oldPhoto = self.photos[index]
+                    let newPhoto = PhotoModel(
+                        id: oldPhoto.id,
+                        size: oldPhoto.size,
+                        createdAt: oldPhoto.createdAt,
+                        welcomeDescription: oldPhoto.welcomeDescription,
+                        thumbImageURL: oldPhoto.thumbImageURL,
+                        largeImageURL: oldPhoto.largeImageURL,
+                        isLiked: !oldPhoto.isLiked
+                    )
+                    self.photos[index] = newPhoto
+                    completion(.success(()))
+                } else {
+                    assertionFailure("Photo not found")
+                }
+            }
+        }
         task.resume()
     }
 }

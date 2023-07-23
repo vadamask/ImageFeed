@@ -76,6 +76,28 @@ final class ImagesListViewController: UIViewController {
     }
 }
 
+//MARK: - ImagesListCellDelegate
+
+extension ImagesListViewController: ImagesListCellDelegate {
+    
+    func imagesListCellDidTapLike(_ cell: ImagesListCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let photo = photos[indexPath.row]
+        imagesListService.changeLike(photoId: photo.id, isLike: photo.isLiked) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(_):
+                self.photos[indexPath.row] = imagesListService.photos[indexPath.row]
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+            case .failure(let error):
+                assertionFailure(error.description(of: error))
+            }
+            
+        }
+    }
+}
+
 //MARK: - UITableViewDataSource
 
 extension ImagesListViewController: UITableViewDataSource {
@@ -90,7 +112,8 @@ extension ImagesListViewController: UITableViewDataSource {
         guard let imageListCell = cell as? ImagesListCell else {
             preconditionFailure("Casting error")
         }
-        let model = ImagesListCell.ImagesListCellModel(
+        imageListCell.delegate = self
+        let model = ImagesListCellModel(
             imageURL: photos[indexPath.row].largeImageURL,
             imageIsLiked: photos[indexPath.row].isLiked,
             date: photos[indexPath.row].createdAt
@@ -126,7 +149,11 @@ extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == photos.count - 1 {
-            imagesListService.fetchPhotosNextPage()
+            imagesListService.fetchPhotosNextPage { result in
+                if case .failure(let error) = result {
+                    assertionFailure(error.description(of: error))
+                }
+            }
         }
     }
 }

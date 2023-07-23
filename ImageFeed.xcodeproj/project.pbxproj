@@ -131,8 +131,8 @@
 		DD049C0A2A2138CD00F2A8D3 /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
-				DDB7123D2A6D80EB004120F6 /* Application */,
 				DDB7123B2A6D7F8D004120F6 /* API */,
+				DDB7123D2A6D80EB004120F6 /* Application */,
 				DD04BC512A4A14E50028EF6D /* Auth */,
 				DD049C1F2A213D9F00F2A8D3 /* Helpers */,
 				DD049C222A2147E500F2A8D3 /* ImagesList */,
@@ -250,9 +250,9 @@
 			isa = PBXGroup;
 			children = (
 				DD6AACA32A5BF9130084D92F /* Errors.swift */,
+				DD0FE2232A69C44700D59F27 /* ImagesListService */,
 				DDB7123C2A6D80CA004120F6 /* Models */,
 				DD04BC4F2A4A148A0028EF6D /* OAuth2Service */,
-				DD0FE2232A69C44700D59F27 /* ImagesListService */,
 				DD6AAC962A59855F0084D92F /* ProfileService */,
 			);
 			path = API;
