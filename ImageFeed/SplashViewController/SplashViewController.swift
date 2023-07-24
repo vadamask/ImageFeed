@@ -60,8 +60,8 @@ final class SplashViewController: UIViewController {
         tabBarController.tabBar.barTintColor = .ypBlack
         tabBarController.tabBar.tintColor = .ypWhite
         
-        let window = UIApplication.shared.windows.first!
-        window.rootViewController = tabBarController
+        let window = UIApplication.shared.windows.first
+        window?.rootViewController = tabBarController
     }
     
     private func showAlert(with error: Error) {

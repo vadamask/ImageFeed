@@ -152,7 +152,6 @@
 				DDA239A82A44AC28005A69E5 /* Constants.swift */,
 				DD0FE2362A6A9EB000D59F27 /* Error+Extensions.swift */,
 				DD0FE2262A6A5A9600D59F27 /* Optional+Extensions.swift */,
-				DD6AAC912A59797D0084D92F /* UIBlockingProgressHUD.swift */,
 				DD049C202A213DD800F2A8D3 /* UIColor+Extensions.swift */,
 				DD6AAC992A598FD80084D92F /* URLRequest+Extensions.swift */,
 				DD6AACA52A5C77B30084D92F /* URLSession+Extensions.swift */,
@@ -241,6 +240,7 @@
 		DD8107382A481D0400FD870C /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				DD6AAC912A59797D0084D92F /* UIBlockingProgressHUD.swift */,
 				DD049C162A2138CE00F2A8D3 /* LaunchScreen.storyboard */,
 			);
 			path = Presentation;

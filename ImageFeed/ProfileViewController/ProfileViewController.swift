@@ -164,12 +164,9 @@ final class ProfileViewController: UIViewController {
         let yesAction = UIAlertAction(title: "Да", style: .default) { _ in
             WebViewViewController.clean()
             OAuth2TokenStorage.shared.removeToken()
-            if let window = UIApplication.shared.windows.first {
-                let splashVC = SplashViewController()
-                window.rootViewController = splashVC
-            } else {
-                assertionFailure("Window error")
-            }
+            let window = UIApplication.shared.windows.first
+            let splashVC = SplashViewController()
+            window?.rootViewController = splashVC
         }
         let noAction = UIAlertAction(title: "Нет", style: .default)
         alertController.addAction(yesAction)

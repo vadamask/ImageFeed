@@ -55,6 +55,11 @@ final class SingleImageViewController: UIViewController {
         view.backgroundColor = .ypBlack
         
         setupScrollView()
+        loadPhoto()
+        setupConstraints()
+    }
+    
+    private func loadPhoto() {
         UIBlockingProgressHUD.show()
         imageView.kf.setImage(with: URL(string: photo.largeImageURL)) { [weak self] result in
             guard let self = self else { return }
@@ -62,13 +67,23 @@ final class SingleImageViewController: UIViewController {
             case .success(let value):
                 rescaleAndCenterImageInScrollView(image: value.image)
             case .failure(let error):
-                assertionFailure(error.description(of: error))
+                showError(error)
             }
             UIBlockingProgressHUD.dismiss()
         }
-        setupConstraints()
     }
     
+    private func showError(_ error: Error) {
+        let alertController = UIAlertController(title: "Что-то пошло не так", message: "Попробовать езще раз?", preferredStyle: .alert)
+        let yesAction = UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            loadPhoto()
+        }
+        let noAction = UIAlertAction(title: "Не надо", style: .default)
+        alertController.addAction(yesAction)
+        alertController.addAction(noAction)
+        self.present(alertController, animated: true)
+    }
     
     private func setupConstraints() {
         view.addSubview(scrollView)
@@ -134,6 +149,8 @@ final class SingleImageViewController: UIViewController {
         present(activityVC, animated: true)
     }
 }
+
+// MARK: - UIScrollViewDelegate
 
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
