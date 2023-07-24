@@ -38,7 +38,6 @@ final class SplashViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        UIBlockingProgressHUD.show()
         if let token = tokenStorage.bearerToken {
             fetchProfile(with: token)
         } else {
@@ -111,6 +110,7 @@ extension SplashViewController: AuthViewControllerDelegate {
     }
     
     private func fetchProfile(with token: String) {
+        UIBlockingProgressHUD.show()
         profileService.fetchProfile(token) { [weak self] result in
             guard let self = self else { return }
             switch result {

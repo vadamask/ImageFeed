@@ -51,7 +51,7 @@ final class ImagesListService {
                           createdAt: self.dateFormatter.date(from: $0.createdAt),
                           welcomeDescription: $0.description,
                           thumbImageURL: $0.urls.thumb,
-                          largeImageURL: $0.urls.regular,
+                          largeImageURL: $0.urls.full,
                           isLiked: $0.likedByUser
                     )
                 }
