@@ -40,6 +40,7 @@ final class OAuth2Service {
                 self.lastCode = nil
                 completion(.failure(error))
             }
+            self.isLoading = false
         }
         self.task = task
         task.resume()

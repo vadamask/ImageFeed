@@ -158,6 +158,23 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc
-    private func logOutButtonPressed() {}
+    private func logOutButtonPressed() {
+        
+        let alertController = UIAlertController(title: "Пока, пока!", message: "Уверены, что хотите выйти?", preferredStyle: .alert)
+        let yesAction = UIAlertAction(title: "Да", style: .default) { _ in
+            WebViewViewController.clean()
+            OAuth2TokenStorage.shared.removeToken()
+            if let window = UIApplication.shared.windows.first {
+                let splashVC = SplashViewController()
+                window.rootViewController = splashVC
+            } else {
+                assertionFailure("Window error")
+            }
+        }
+        let noAction = UIAlertAction(title: "Нет", style: .default)
+        alertController.addAction(yesAction)
+        alertController.addAction(noAction)
+        self.present(alertController, animated: true)
+    }
     
 }
