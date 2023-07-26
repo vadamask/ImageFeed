@@ -22,7 +22,7 @@ final class ImagesListViewController: UIViewController {
     private let imagesListService = ImagesListService.shared
     private var imageListServiceObserver: NSObjectProtocol?
     
-    var photos: [PhotoModel] = []
+    var photos: [Photo] = []
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
@@ -151,11 +151,7 @@ extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == photos.count - 1 {
-            imagesListService.fetchPhotosNextPage { result in
-                if case .failure(let error) = result {
-                    assertionFailure(error.description(of: error))
-                }
-            }
+            imagesListService.fetchPhotosNextPage()
         }
     }
 }

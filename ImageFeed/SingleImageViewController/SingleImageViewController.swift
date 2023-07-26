@@ -43,7 +43,7 @@ final class SingleImageViewController: UIViewController {
         return button
     }()
     
-    var photo: PhotoModel!
+    var photo: Photo!
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
@@ -79,7 +79,9 @@ final class SingleImageViewController: UIViewController {
             guard let self = self else { return }
             loadPhoto()
         }
-        let noAction = UIAlertAction(title: "Не надо", style: .default)
+        let noAction = UIAlertAction(title: "Не надо", style: .default) { _ in
+            alertController.dismiss(animated: true)
+        }
         alertController.addAction(yesAction)
         alertController.addAction(noAction)
         self.present(alertController, animated: true)

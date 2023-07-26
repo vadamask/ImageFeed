@@ -168,7 +168,9 @@ final class ProfileViewController: UIViewController {
             let splashVC = SplashViewController()
             window?.rootViewController = splashVC
         }
-        let noAction = UIAlertAction(title: "Нет", style: .default)
+        let noAction = UIAlertAction(title: "Нет", style: .default) { _ in
+            alertController.dismiss(animated: true)
+        }
         alertController.addAction(yesAction)
         alertController.addAction(noAction)
         self.present(alertController, animated: true)

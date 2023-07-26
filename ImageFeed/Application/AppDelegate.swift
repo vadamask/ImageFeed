@@ -12,9 +12,9 @@ import ProgressHUD
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        ProgressHUD.animationType = .systemActivityIndicator
+        ProgressHUD.animationType = .circleRotateChase
         ProgressHUD.colorHUD = .black
-        ProgressHUD.colorAnimation = .lightGray
+        ProgressHUD.colorAnimation = .white
         return true
     }
     
