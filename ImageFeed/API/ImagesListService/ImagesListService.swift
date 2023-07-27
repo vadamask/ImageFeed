@@ -25,7 +25,7 @@ final class ImagesListService {
     func fetchPhotosNextPage() {
         
         assert(Thread.isMainThread)
-        task?.cancel()
+        guard task == nil else { return }
         
         let nextPage = lastLoadedPage == nil ? 1 : lastLoadedPage.number + 1
         
@@ -68,13 +68,7 @@ final class ImagesListService {
     
     func changeLike(photoId: String, isLike: Bool,_ completion: @escaping (Result<Void, Error>) -> Void) {
         
-        var request: URLRequest?
-        
-        if isLike {
-            request = URLRequest.makeHTTPRequest(path: "/photos/\(photoId)/like", httpMethod: "DELETE")
-        } else {
-            request = URLRequest.makeHTTPRequest(path: "/photos/\(photoId)/like", httpMethod: "POST")
-        }
+        let request = URLRequest.makeHTTPRequest(path: "/photos/\(photoId)/like", httpMethod: isLike ? "DELETE" : "POST")
         
         guard var request = request,
               let token = tokenStorage.bearerToken else {

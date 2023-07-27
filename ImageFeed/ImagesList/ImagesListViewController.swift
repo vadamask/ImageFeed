@@ -32,6 +32,7 @@ final class ImagesListViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .ypBlack
+        imagesListService.fetchPhotosNextPage()
         setupTableView()
         addObserver()
     }
@@ -83,10 +84,9 @@ extension ImagesListViewController: ImagesListCellDelegate {
     func imagesListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         let photo = photos[indexPath.row]
-        self.tableView.isUserInteractionEnabled = false
+        UIBlockingProgressHUD.show()
         imagesListService.changeLike(photoId: photo.id, isLike: photo.isLiked) { [weak self] result in
             guard let self = self else { return }
-            
             switch result {
             case .success(_):
                 self.photos[indexPath.row] = imagesListService.photos[indexPath.row]
@@ -94,7 +94,7 @@ extension ImagesListViewController: ImagesListCellDelegate {
             case .failure(let error):
                 assertionFailure(error.description(of: error))
             }
-            self.tableView.isUserInteractionEnabled = true
+            UIBlockingProgressHUD.dismiss()
         }
     }
 }

@@ -12,9 +12,7 @@ import ProgressHUD
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        ProgressHUD.animationType = .circleRotateChase
-        ProgressHUD.colorHUD = .black
-        ProgressHUD.colorAnimation = .white
+        configureProgressHUD()
         return true
     }
     
@@ -31,6 +29,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
+    }
+    
+    private func configureProgressHUD() {
+        ProgressHUD.animationType = .circleRotateChase
+        ProgressHUD.colorHUD = .black
+        ProgressHUD.colorAnimation = .white
     }
 }
 
