@@ -19,6 +19,7 @@ final class SplashViewController: UIViewController {
     private let networkService = OAuth2Service.shared
     private let profileService = ProfileService.shared
     private let tokenStorage = OAuth2TokenStorage.shared
+    private let imagesListService = ImagesListService.shared
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
@@ -37,7 +38,6 @@ final class SplashViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
         if let token = tokenStorage.bearerToken {
             fetchProfile(with: token)
         } else {
@@ -60,14 +60,17 @@ final class SplashViewController: UIViewController {
         tabBarController.tabBar.barTintColor = .ypBlack
         tabBarController.tabBar.tintColor = .ypWhite
         
-        let window = UIApplication.shared.windows.first!
-        window.rootViewController = tabBarController
+        let window = UIApplication.shared.windows.first
+        window?.rootViewController = tabBarController
     }
     
     private func showAlert(with error: Error) {
+        
+        let message = "Не удалось войти в систему\n" + error.description(of: error)
+        
         let alertController = UIAlertController(
             title: "Что-то пошло не так",
-            message: "Не удалось войти в систему\n" + error.localizedDescription,
+            message: message,
             preferredStyle: .alert
         )
         
@@ -86,7 +89,6 @@ final class SplashViewController: UIViewController {
 extension SplashViewController: AuthViewControllerDelegate {
     
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
-        UIBlockingProgressHUD.show()
         networkService.isLoading = true
         dismiss(animated: true) {
             self.fetchOAuthToken(with: code)
@@ -108,15 +110,14 @@ extension SplashViewController: AuthViewControllerDelegate {
     }
     
     private func fetchProfile(with token: String) {
+        UIBlockingProgressHUD.show()
         profileService.fetchProfile(token) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let profile):
-                ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { [weak self] _ in
-                    guard let self = self else { return }
-                    self.switchToTabBarController()
-                }
+                ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { _ in }
                 UIBlockingProgressHUD.dismiss()
+                switchToTabBarController()
             case .failure(let error):
                 UIBlockingProgressHUD.dismiss()
                 showAlert(with: error)
