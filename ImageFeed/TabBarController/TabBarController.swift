@@ -8,11 +8,9 @@
 import UIKit
 
 final class TabBarController: UITabBarController {
-    
     override func viewDidLoad() {
         let imagesListViewController = ImagesListViewController()
         let profileViewController = ProfileViewController()
-        
         imagesListViewController.tabBarItem = UITabBarItem(
             title: nil,
             image: UIImage(named: "tab_editorial_active"),
@@ -23,7 +21,6 @@ final class TabBarController: UITabBarController {
             image: UIImage(named: "tab_profile_active"),
             selectedImage: nil
         )
-        
         self.viewControllers = [imagesListViewController, profileViewController]
     }
 }

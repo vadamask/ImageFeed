@@ -28,9 +28,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return sceneConfiguration
     }
     
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-    }
-    
     private func configureProgressHUD() {
         ProgressHUD.animationType = .circleRotateChase
         ProgressHUD.colorHUD = .black

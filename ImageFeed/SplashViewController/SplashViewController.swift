@@ -8,7 +8,7 @@
 import UIKit
 
 final class SplashViewController: UIViewController {
-    
+
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -65,20 +65,16 @@ final class SplashViewController: UIViewController {
     }
     
     private func showAlert(with error: Error) {
-        
         let message = "Не удалось войти в систему\n" + error.description(of: error)
-        
         let alertController = UIAlertController(
             title: "Что-то пошло не так",
             message: message,
             preferredStyle: .alert
         )
-        
         let action = UIAlertAction(title: "Ок", style: .cancel) { [weak self] _ in
             guard let self = self else { return }
             switchToAuthViewController()
         }
-        
         alertController.addAction(action)
         present(alertController, animated: true)
     }
@@ -87,7 +83,6 @@ final class SplashViewController: UIViewController {
 //MARK: - AuthViewControllerDelegate
 
 extension SplashViewController: AuthViewControllerDelegate {
-    
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
         networkService.isLoading = true
         dismiss(animated: true) {
