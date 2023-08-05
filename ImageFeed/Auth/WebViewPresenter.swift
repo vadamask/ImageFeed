@@ -11,15 +11,21 @@ protocol WebViewPresenterProtocol {
     var view: WebViewViewControllerProtocol? { get set }
     func viewDidLoad()
     func code(from url: URL) -> String?
+    func observeWebViewProgress()
 }
 
 final class WebViewPresenter: WebViewPresenterProtocol {
+    var authHelper: AuthHelperProtocol
     weak var view: WebViewViewControllerProtocol?
     private var estimatedProgressObservation: NSKeyValueObservation?
     
+    init(authHelper: AuthHelperProtocol) {
+        self.authHelper = authHelper
+    }
+    
     func viewDidLoad() {
-        loadRequest()
-        observeWebViewProgress()
+        let request = authHelper.authRequest()
+        view?.load(request)
     }
     
     func shouldHideProgress(for value: Float) -> Bool {
@@ -27,37 +33,10 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     }
     
     func code(from url: URL) -> String? {
-        if let urlComponents = URLComponents(string: url.absoluteString),
-           urlComponents.path == "/oauth/authorize/native",
-           let items = urlComponents.queryItems,
-           let codeItem = items.first(where: {$0.name == "code"})
-        {
-            return codeItem.value
-        } else {
-            return nil
-        }
+        authHelper.code(from: url)
     }
     
-    private func loadRequest() {
-        guard var urlComponents = URLComponents(string: AuthConfiguration.shared.unsplashAuthorizeURLString) else {
-            assertionFailure("Failed to make urlComponents from \(AuthConfiguration.shared.unsplashAuthorizeURLString)")
-            return
-        }
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: AuthConfiguration.shared.accessKey),
-            URLQueryItem(name: "redirect_uri", value: AuthConfiguration.shared.redirectURI),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: AuthConfiguration.shared.accessScope)
-        ]
-        if let url = urlComponents.url {
-            let request = URLRequest(url: url)
-            view?.load(request)
-        } else {
-            assertionFailure("Failed to make URL from \(urlComponents)")
-        }
-    }
-    
-    private func observeWebViewProgress() {
+    func observeWebViewProgress() {
         estimatedProgressObservation = view?.webView.observe(\.estimatedProgress) { [weak self] _, _ in
             guard let self = self,
                   let view = view else { return }

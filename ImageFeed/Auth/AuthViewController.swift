@@ -13,6 +13,8 @@ protocol AuthViewControllerDelegate: AnyObject {
 
 final class AuthViewController: UIViewController {
     
+    weak var delegate: AuthViewControllerDelegate?
+    
     private let logoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -32,8 +34,6 @@ final class AuthViewController: UIViewController {
         return button
     }()
     
-    weak var delegate: AuthViewControllerDelegate?
-    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
@@ -41,14 +41,13 @@ final class AuthViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .ypBlack
+        setupViews()
         setupConstraints()
     }
     
-    @objc
-    private func buttonTapped() {
+    @objc private func buttonTapped() {
         let webView = WebViewViewController()
-        let presenter = WebViewPresenter()
+        let presenter = WebViewPresenter(authHelper: AuthHelper())
         webView.presenter = presenter
         presenter.view = webView
         webView.delegate = self
@@ -56,10 +55,13 @@ final class AuthViewController: UIViewController {
         present(webView, animated: true)
     }
     
-    private func setupConstraints() {
+    private func setupViews() {
+        view.backgroundColor = .ypBlack
         view.addSubview(logoImageView)
         view.addSubview(button)
-        
+    }
+    
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
             logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logoImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),

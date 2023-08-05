@@ -24,7 +24,7 @@ struct AuthConfiguration {
     let accessTokenURL: String
     let unsplashAuthorizeURLString: String
     
-    static var shared: AuthConfiguration {
+    static var standard: AuthConfiguration {
         return AuthConfiguration(
             accessKey: AccessKey,
             secretKey: SecretKey,

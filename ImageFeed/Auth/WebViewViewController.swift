@@ -14,7 +14,7 @@ protocol WebViewViewControllerDelegate: AnyObject {
 }
 
 protocol WebViewViewControllerProtocol: AnyObject {
-    var webView: WKWebView { get }
+    var webView: WKWebView! { get }
     var presenter: WebViewPresenterProtocol? { get set }
     func load(_ request: URLRequest)
     func setProgressValue(_ newValue: Float)
@@ -22,11 +22,10 @@ protocol WebViewViewControllerProtocol: AnyObject {
 }
 
 final class WebViewViewController: UIViewController & WebViewViewControllerProtocol {
-    
     var presenter: WebViewPresenterProtocol?
     weak var delegate: WebViewViewControllerDelegate?
     
-    let webView: WKWebView = {
+    let webView: WKWebView! = {
         let webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.backgroundColor = .ypWhite
@@ -60,6 +59,7 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
         setupViews()
         setupConstraints()
         presenter?.viewDidLoad()
+        presenter?.observeWebViewProgress()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

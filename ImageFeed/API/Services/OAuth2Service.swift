@@ -12,6 +12,7 @@ final class OAuth2Service {
     static let shared = OAuth2Service()
     var isLoading = false
     
+    private let configuration = AuthConfiguration.standard
     private let urlSession = URLSession.shared
     private var lastCode: String?
     private var task: URLSessionTask?
@@ -47,15 +48,15 @@ final class OAuth2Service {
     
     private func makeRequest(with code: String) -> URLRequest? {
         
-        guard var urlComponents = URLComponents(string: AuthConfiguration.shared.accessTokenURL) else {
-            assertionFailure("Failed to make URLComponents from \(AuthConfiguration.shared.accessTokenURL)")
+        guard var urlComponents = URLComponents(string: configuration.accessTokenURL) else {
+            assertionFailure("Failed to make URLComponents from \(configuration.accessTokenURL)")
             return nil
         }
         
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: AuthConfiguration.shared.accessKey),
-            URLQueryItem(name: "client_secret", value: AuthConfiguration.shared.secretKey),
-            URLQueryItem(name: "redirect_uri", value: AuthConfiguration.shared.redirectURI),
+            URLQueryItem(name: "client_id", value: configuration.accessKey),
+            URLQueryItem(name: "client_secret", value: configuration.secretKey),
+            URLQueryItem(name: "redirect_uri", value: configuration.redirectURI),
             URLQueryItem(name: "code", value: code),
             URLQueryItem(name: "grant_type", value: "authorization_code")
         ]
