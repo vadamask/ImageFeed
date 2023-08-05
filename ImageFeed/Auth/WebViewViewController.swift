@@ -13,9 +13,20 @@ protocol WebViewViewControllerDelegate: AnyObject {
     func webViewViewControllerDidCancel(_ vc: WebViewViewController)
 }
 
-final class WebViewViewController: UIViewController {
+protocol WebViewViewControllerProtocol: AnyObject {
+    var webView: WKWebView { get }
+    var presenter: WebViewPresenterProtocol? { get set }
+    func load(_ request: URLRequest)
+    func setProgressValue(_ newValue: Float)
+    func setProgressHidden(_ isHidden: Bool)
+}
+
+final class WebViewViewController: UIViewController & WebViewViewControllerProtocol {
     
-    private let webView: WKWebView = {
+    var presenter: WebViewPresenterProtocol?
+    weak var delegate: WebViewViewControllerDelegate?
+    
+    let webView: WKWebView = {
         let webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.backgroundColor = .ypWhite
@@ -41,38 +52,40 @@ final class WebViewViewController: UIViewController {
         return progressView
     }()
     
-    weak var delegate: WebViewViewControllerDelegate?
-    
-    private var estimatedProgressObservation: NSKeyValueObservation?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         webView.navigationDelegate = self
-        view.backgroundColor = .ypWhite
-        setupConstraints()
-        makeRequest()
         
-        estimatedProgressObservation = webView.observe(\.estimatedProgress) { [weak self] _, _ in
-            guard let self = self else { return }
-            self.updateProgress()
-        }
+        setupViews()
+        setupConstraints()
+        presenter?.viewDidLoad()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .darkContent
     }
     
-    private func updateProgress() {
-        progressView.progress = Float(webView.estimatedProgress)
-        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+    func load(_ request: URLRequest) {
+        webView.load(request)
     }
     
-    private func setupConstraints() {
+    func setProgressValue(_ newValue: Float) {
+        progressView.progress = newValue
+    }
+    
+    func setProgressHidden(_ isHidden: Bool) {
+        progressView.isHidden = isHidden
+    }
+    
+    private func setupViews() {
+        view.backgroundColor = .ypWhite
         view.addSubview(webView)
         view.addSubview(backButton)
         view.addSubview(progressView)
-        
+    }
+    
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
@@ -90,38 +103,8 @@ final class WebViewViewController: UIViewController {
         ])
     }
     
-    private func makeRequest() {
-        guard var urlComponents = URLComponents(string: Constants.unsplashAuthorizeURLString) else {
-            assertionFailure("Failed to make urlComponents from \(Constants.unsplashAuthorizeURLString)")
-            return
-        }
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: Constants.accessScope)
-        ]
-        if let url = urlComponents.url {
-            let request = URLRequest(url: url)
-            webView.load(request)
-        } else {
-            assertionFailure("Failed to make URL from \(urlComponents)")
-            return
-        }
-    }
-    
-    @objc
-    private func didTapBackButton() {
+    @objc private func didTapBackButton() {
         delegate?.webViewViewControllerDidCancel(self)
-    }
-    
-    static func clean() {
-        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
-        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
-            records.forEach { record in
-                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
-            }
-        }
     }
 }
 
@@ -129,24 +112,12 @@ final class WebViewViewController: UIViewController {
 
 extension WebViewViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        if let code = code(from: navigationAction) {
+        if let url = navigationAction.request.url,
+           let code = presenter?.code(from: url) {
             delegate?.webViewViewController(self, didAuthenticateWithCode: code)
             decisionHandler(.cancel)
         } else {
             decisionHandler(.allow)
-        }
-    }
-    
-    private func code(from navigationAction: WKNavigationAction) -> String? {
-        if let url = navigationAction.request.url,
-           let urlComponents = URLComponents(string: url.absoluteString),
-           urlComponents.path == "/oauth/authorize/native",
-           let items = urlComponents.queryItems,
-           let codeItem = items.first(where: {$0.name == "code"})
-        {
-            return codeItem.value
-        } else {
-            return nil
         }
     }
 }

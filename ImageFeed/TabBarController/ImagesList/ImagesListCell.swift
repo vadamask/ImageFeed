@@ -118,5 +118,4 @@ final class ImagesListCell: UITableViewCell {
     @objc private func likeButtonTapped() {
         delegate?.imagesListCellDidTapLike(self)
     }
-    
 }

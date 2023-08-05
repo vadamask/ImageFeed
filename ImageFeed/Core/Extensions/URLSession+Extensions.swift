@@ -18,6 +18,7 @@ extension URLSession {
             if let error = error {
                 DispatchQueue.main.async {
                     completion(.failure(NetworkError.urlSessionError(error)))
+                    return
                 }
             }
             
@@ -25,8 +26,9 @@ extension URLSession {
                 if !(200..<300 ~= response.statusCode) {
                     DispatchQueue.main.async {
                         completion(.failure(NetworkError.httpStatusCode(response.statusCode)))
+                        return
                     }
-                }
+                } 
             }
             
             if let data = data {

@@ -47,10 +47,13 @@ final class AuthViewController: UIViewController {
     
     @objc
     private func buttonTapped() {
-        let webViewVC = WebViewViewController()
-        webViewVC.delegate = self
-        webViewVC.modalPresentationStyle = .fullScreen
-        present(webViewVC, animated: true)
+        let webView = WebViewViewController()
+        let presenter = WebViewPresenter()
+        webView.presenter = presenter
+        presenter.view = webView
+        webView.delegate = self
+        webView.modalPresentationStyle = .fullScreen
+        present(webView, animated: true)
     }
     
     private func setupConstraints() {
