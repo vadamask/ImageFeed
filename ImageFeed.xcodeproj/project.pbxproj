@@ -19,6 +19,7 @@
 		DD0FE2372A6A9EB000D59F27 /* Error+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0FE2362A6A9EB000D59F27 /* Error+Extensions.swift */; };
 		DD146C592A7E71BE00069136 /* ProfileViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD146C582A7E71BE00069136 /* ProfileViewPresenter.swift */; };
 		DD146C5B2A7E798B00069136 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD146C5A2A7E798B00069136 /* ProfileViewModel.swift */; };
+		DD146C5D2A7FDEAF00069136 /* ProfileViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD146C5C2A7FDEAF00069136 /* ProfileViewTests.swift */; };
 		DD59E4C92A324375005C650F /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD59E4C82A324375005C650F /* ProfileViewController.swift */; };
 		DD6AAC902A587D3B0084D92F /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = DD6AAC8F2A587D3B0084D92F /* ProgressHUD */; };
 		DD6AAC922A59797D0084D92F /* UIBlockingProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6AAC912A59797D0084D92F /* UIBlockingProgressHUD.swift */; };
@@ -73,6 +74,7 @@
 		DD0FE2362A6A9EB000D59F27 /* Error+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+Extensions.swift"; sourceTree = "<group>"; };
 		DD146C582A7E71BE00069136 /* ProfileViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewPresenter.swift; sourceTree = "<group>"; };
 		DD146C5A2A7E798B00069136 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		DD146C5C2A7FDEAF00069136 /* ProfileViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewTests.swift; sourceTree = "<group>"; };
 		DD59E4C82A324375005C650F /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		DD6AAC912A59797D0084D92F /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
 		DD6AAC972A5985D70084D92F /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
@@ -298,6 +300,7 @@
 			isa = PBXGroup;
 			children = (
 				DDBA194E2A7E534800E1C508 /* WebViewTests.swift */,
+				DD146C5C2A7FDEAF00069136 /* ProfileViewTests.swift */,
 			);
 			path = ImageFeedTests;
 			sourceTree = "<group>";
@@ -452,6 +455,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD146C5D2A7FDEAF00069136 /* ProfileViewTests.swift in Sources */,
 				DDBA194F2A7E534800E1C508 /* WebViewTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

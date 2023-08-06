@@ -71,6 +71,10 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         updateProfileDetails()
     }
     
+    deinit {
+        presenter?.removeObserver()
+    }
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }

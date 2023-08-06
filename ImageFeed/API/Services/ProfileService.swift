@@ -7,14 +7,20 @@
 
 import Foundation
 
-final class ProfileService {
-    
+protocol ProfileServiceProtocol {
+    static var shared: ProfileServiceProtocol { get }
+    var profile: ProfileResult? { get }
+    func fetchProfile(_ token: String, completion: @escaping (Result<ProfileResult, Error>) -> Void)
+
+}
+
+final class ProfileService: ProfileServiceProtocol {
     private init(){}
     private var task: URLSessionTask?
     private let urlSession = URLSession.shared
     private(set) var profile: ProfileResult?
     
-    static let shared = ProfileService()
+    static let shared: ProfileServiceProtocol = ProfileService()
     
     func fetchProfile(_ token: String, completion: @escaping (Result<ProfileResult, Error>) -> Void) {
         assert(Thread.isMainThread)
@@ -28,7 +34,7 @@ final class ProfileService {
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
             guard let self = self else { return }
-            self.task = nil
+            defer { self.task = nil }
             
             switch result {
             case .success(let profileResult):
