@@ -10,7 +10,12 @@ import UIKit
 final class TabBarController: UITabBarController {
     override func viewDidLoad() {
         let imagesListViewController = ImagesListViewController()
+        
         let profileViewController = ProfileViewController()
+        let profilePresenter = ProfileViewPresenter()
+        profileViewController.presenter = profilePresenter
+        profilePresenter.view = profileViewController
+        
         imagesListViewController.tabBarItem = UITabBarItem(
             title: nil,
             image: UIImage(named: "tab_editorial_active"),

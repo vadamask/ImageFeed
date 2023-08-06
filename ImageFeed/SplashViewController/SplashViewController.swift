@@ -27,13 +27,8 @@ final class SplashViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        view.backgroundColor = .ypBlack
-        view.addSubview(imageView)
-        NSLayoutConstraint.activate([
-            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
+        setupViews()
+        setupConstraints()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -45,6 +40,18 @@ final class SplashViewController: UIViewController {
                 switchToAuthViewController()
             }
         }
+    }
+    
+    private func setupViews() {
+        view.backgroundColor = .ypBlack
+        view.addSubview(imageView)
+    }
+    
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
     }
     
     private func switchToAuthViewController() {
