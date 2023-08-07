@@ -11,7 +11,6 @@ protocol ProfileServiceProtocol {
     static var shared: ProfileServiceProtocol { get }
     var profile: ProfileResult? { get }
     func fetchProfile(_ token: String, completion: @escaping (Result<ProfileResult, Error>) -> Void)
-
 }
 
 final class ProfileService: ProfileServiceProtocol {

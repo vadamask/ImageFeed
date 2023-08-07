@@ -108,7 +108,6 @@ final class SingleImageViewController: UIViewController {
             shareButton.widthAnchor.constraint(equalToConstant: 50),
             shareButton.heightAnchor.constraint(equalToConstant: 50)
         ])
-        
     }
     
     private func setupScrollView() {
@@ -129,7 +128,7 @@ final class SingleImageViewController: UIViewController {
         let wScale = visibleRectSize.width / imageSize.width
         let scale = min(maxZoomScale, max(minZoomScale, max(hScale, wScale)))
         scrollView.setZoomScale(scale, animated: false)
-        scrollView.layoutIfNeeded() // заставляем пересчитать принудительно
+        scrollView.layoutIfNeeded()
         let newContentSize = scrollView.contentSize
         let x = (newContentSize.width - visibleRectSize.width) / 2
         let y = (newContentSize.height - visibleRectSize.height) / 2
