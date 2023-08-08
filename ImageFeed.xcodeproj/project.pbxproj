@@ -36,6 +36,8 @@
 		DD8107352A470C5700FD870C /* OAuth2Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8107342A470C5700FD870C /* OAuth2Service.swift */; };
 		DD8107372A471BF400FD870C /* OAuth2TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8107362A471BF400FD870C /* OAuth2TokenStorage.swift */; };
 		DD81073A2A4820E200FD870C /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8107392A4820E200FD870C /* SplashViewController.swift */; };
+		DD8F10EB2A82B816002D4846 /* OptionalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8F10EA2A82B816002D4846 /* OptionalTests.swift */; };
+		DD8F10ED2A82B9EE002D4846 /* URLRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8F10EC2A82B9EE002D4846 /* URLRequestTests.swift */; };
 		DDA239A92A44AC28005A69E5 /* AuthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA239A82A44AC28005A69E5 /* AuthConfiguration.swift */; };
 		DDA239AC2A44B2F4005A69E5 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA239AB2A44B2F3005A69E5 /* AuthViewController.swift */; };
 		DDA239AE2A44D4E2005A69E5 /* WebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA239AD2A44D4E2005A69E5 /* WebViewViewController.swift */; };
@@ -90,6 +92,8 @@
 		DD8107342A470C5700FD870C /* OAuth2Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2Service.swift; sourceTree = "<group>"; };
 		DD8107362A471BF400FD870C /* OAuth2TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2TokenStorage.swift; sourceTree = "<group>"; };
 		DD8107392A4820E200FD870C /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
+		DD8F10EA2A82B816002D4846 /* OptionalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalTests.swift; sourceTree = "<group>"; };
+		DD8F10EC2A82B9EE002D4846 /* URLRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequestTests.swift; sourceTree = "<group>"; };
 		DDA239A82A44AC28005A69E5 /* AuthConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfiguration.swift; sourceTree = "<group>"; };
 		DDA239AB2A44B2F3005A69E5 /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		DDA239AD2A44D4E2005A69E5 /* WebViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewViewController.swift; sourceTree = "<group>"; };
@@ -207,9 +211,9 @@
 		DD59E4C72A32432C005C650F /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				DD146C5A2A7E798B00069136 /* ProfileViewModel.swift */,
 				DD59E4C82A324375005C650F /* ProfileViewController.swift */,
 				DD146C582A7E71BE00069136 /* ProfileViewPresenter.swift */,
-				DD146C5A2A7E798B00069136 /* ProfileViewModel.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -307,6 +311,8 @@
 				DDBA194E2A7E534800E1C508 /* WebViewTests.swift */,
 				DD146C5C2A7FDEAF00069136 /* ProfileViewTests.swift */,
 				DD2525D52A817325004FE031 /* ImagesListTests.swift */,
+				DD8F10EA2A82B816002D4846 /* OptionalTests.swift */,
+				DD8F10EC2A82B9EE002D4846 /* URLRequestTests.swift */,
 			);
 			path = ImageFeedTests;
 			sourceTree = "<group>";
@@ -465,6 +471,8 @@
 				DD2525D62A817325004FE031 /* ImagesListTests.swift in Sources */,
 				DD146C5D2A7FDEAF00069136 /* ProfileViewTests.swift in Sources */,
 				DDBA194F2A7E534800E1C508 /* WebViewTests.swift in Sources */,
+				DD8F10EB2A82B816002D4846 /* OptionalTests.swift in Sources */,
+				DD8F10ED2A82B9EE002D4846 /* URLRequestTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
