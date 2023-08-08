@@ -51,10 +51,13 @@ final class SingleImageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        loadPhoto()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         view.backgroundColor = .ypBlack
         setupScrollView()
-        loadPhoto()
         setupConstraints()
     }
     

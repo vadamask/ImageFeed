@@ -25,12 +25,12 @@ final class SplashViewController: UIViewController {
         .lightContent
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         setupViews()
         setupConstraints()
     }
-    
+     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if let token = tokenStorage.bearerToken {

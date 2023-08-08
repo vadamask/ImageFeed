@@ -55,11 +55,14 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
         super.viewDidLoad()
         
         webView.navigationDelegate = self
-        
-        setupViews()
-        setupConstraints()
         presenter?.viewDidLoad()
         presenter?.observeWebViewProgress()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupViews()
+        setupConstraints()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

@@ -36,9 +36,14 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        tableView.delegate = presenter
+        tableView.dataSource = presenter
         presenter?.addObserver()
         presenter?.fetchPhotosNextPage()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         setupViews()
     }
     
@@ -65,11 +70,8 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
     }
 
     private func setupViews() {
-        tableView.delegate = presenter
-        tableView.dataSource = presenter
         view.backgroundColor = .ypBlack
         view.addSubview(tableView)
-        
         NSLayoutConstraint.activate([
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),

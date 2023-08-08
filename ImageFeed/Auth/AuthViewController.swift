@@ -38,9 +38,8 @@ final class AuthViewController: UIViewController {
         .lightContent
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         setupViews()
         setupConstraints()
     }

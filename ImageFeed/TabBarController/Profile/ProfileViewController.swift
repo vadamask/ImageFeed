@@ -64,11 +64,14 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
-        setupViews()
-        setupConstraints()
         presenter?.addObserver()
         updateProfileDetails()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupViews()
+        setupConstraints()
     }
     
     deinit {
