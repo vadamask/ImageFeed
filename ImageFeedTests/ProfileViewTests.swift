@@ -57,10 +57,10 @@ final class ProfileViewPresenterSpy: ProfileViewPresenterProtocol {
     var addObserverCalled = false
     var removeObserverCalled = false
     
-    func addObserver() {
+    func addObserverForImageURL() {
         addObserverCalled = true
     }
-    func removeObserver() {
+    func removeObserverForImageURL() {
         removeObserverCalled = true
     }
     func cleanAndSwitchToSplashVC() {}

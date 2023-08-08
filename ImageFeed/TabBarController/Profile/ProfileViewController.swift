@@ -64,7 +64,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter?.addObserver()
+        presenter?.addObserverForImageURL()
         updateProfileDetails()
     }
     
@@ -75,7 +75,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     }
     
     deinit {
-        presenter?.removeObserver()
+        presenter?.removeObserverForImageURL()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

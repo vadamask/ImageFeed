@@ -36,8 +36,8 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.delegate = presenter
-        tableView.dataSource = presenter
+        tableView.delegate = self
+        tableView.dataSource = self
         presenter?.addObserver()
         presenter?.fetchPhotosNextPage()
     }
@@ -78,5 +78,47 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
             tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
         ])
+    }
+}
+
+//MARK: - UITableViewDataSource
+
+extension ImagesListViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        presenter?.numberOfRowsInSection() ?? 0
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
+        guard let imageListCell = cell as? ImagesListCell else { preconditionFailure("Casting error") }
+        imageListCell.delegate = self
+        if let model = presenter?.createModel(at: indexPath) {
+            imageListCell.configure(with: model, at: indexPath)
+        }
+        return imageListCell
+    }
+}
+
+//MARK: - UITableViewDelegate
+
+extension ImagesListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        presenter?.heightForRow(at: indexPath, with: tableView.bounds.width) ?? 50
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        presenter?.didSelectRow(at: indexPath)
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        presenter?.willDisplayCell(at: indexPath)
+    }
+}
+
+//MARK: - ImagesListCellDelegate
+
+extension ImagesListViewController: ImagesListCellDelegate {
+    func imagesListCellDidTapLike(at indexPath: IndexPath) {
+        presenter?.likeDidTapped(at: indexPath)
     }
 }

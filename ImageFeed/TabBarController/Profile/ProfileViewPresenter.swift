@@ -10,8 +10,8 @@ import WebKit
 
 protocol ProfileViewPresenterProtocol {
     var view: ProfileViewControllerProtocol? { get set }
-    func addObserver()
-    func removeObserver()
+    func addObserverForImageURL()
+    func removeObserverForImageURL()
     func cleanAndSwitchToSplashVC()
     func didTapLogoutButton()
     func convertResultToViewModel() -> ProfileViewModel?
@@ -27,7 +27,7 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
         self.profileService = profileService
     }
     
-    func addObserver() {
+    func addObserverForImageURL() {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(updateAvatar(notification:)),
@@ -36,7 +36,7 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
         )
     }
     
-    func removeObserver() {
+    func removeObserverForImageURL() {
         NotificationCenter.default.removeObserver(
             self,
             name: ProfileImageService.didChangeNotification,
@@ -89,7 +89,6 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
             let profileImageURL = userInfo["URL"] as? String,
             let url = URL(string: profileImageURL)
         else { return }
-        
         view?.setAvatar(url)
     }
     
