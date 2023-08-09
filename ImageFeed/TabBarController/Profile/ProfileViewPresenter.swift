@@ -21,10 +21,12 @@ protocol ProfileViewPresenterProtocol {
 final class ProfileViewPresenter: ProfileViewPresenterProtocol {
     weak var view: ProfileViewControllerProtocol?
     private let profileService: ProfileServiceProtocol
-    private let profileImageService = ProfileImageService.shared
+    private let profileImageService: ProfileImageServiceProtocol
     
-    init(profileService: ProfileServiceProtocol) {
+    init(profileService: ProfileServiceProtocol = ProfileService.shared,
+         profileImageService: ProfileImageServiceProtocol = ProfileImageService.shared) {
         self.profileService = profileService
+        self.profileImageService = profileImageService
     }
     
     func addObserverForImageURL() {

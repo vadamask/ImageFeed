@@ -15,7 +15,7 @@ final class TabBarController: UITabBarController {
         imagesListPresenter.view = imagesListViewController
         
         let profileViewController = ProfileViewController()
-        let profilePresenter = ProfileViewPresenter(profileService: ProfileService.shared)
+        let profilePresenter = ProfileViewPresenter()
         profileViewController.presenter = profilePresenter
         profilePresenter.view = profileViewController
         

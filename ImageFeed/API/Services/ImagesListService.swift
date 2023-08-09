@@ -38,7 +38,7 @@ final class ImagesListService {
         
         let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
             guard let self = self else { return }
-            self.task = nil
+            defer { self.task = nil }
             
             switch result{
             case .success(let photosData):

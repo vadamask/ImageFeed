@@ -7,7 +7,13 @@
 
 import Foundation
 
-final class ProfileImageService {
+protocol ProfileImageServiceProtocol {
+    static var shared: ProfileImageServiceProtocol { get }
+    var avatarURL: String? { get }
+    func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void)
+}
+
+final class ProfileImageService: ProfileImageServiceProtocol {
     
     private init(){}
     private var task: URLSessionTask?
@@ -16,7 +22,7 @@ final class ProfileImageService {
     private let tokenStorage = OAuth2TokenStorage.shared
     
     static let didChangeNotification = Notification.Name("ProfileImageProviderDidChange")
-    static let shared = ProfileImageService()
+    static let shared: ProfileImageServiceProtocol = ProfileImageService()
     
     func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
@@ -31,7 +37,7 @@ final class ProfileImageService {
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileImageResult, Error>) in
             guard let self = self else { return }
-            self.task = nil
+            defer { self.task = nil }
             
             switch result {
             case .success(let user):
