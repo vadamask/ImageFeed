@@ -7,7 +7,14 @@
 
 import Foundation
 
-final class ImagesListService {
+protocol ImagesListServiceProtocol {
+    static var shared: ImagesListServiceProtocol { get }
+    var photos: [Photo] { get }
+    func fetchPhotosNextPage()
+    func changeLike(photoId: String, isLike: Bool,_ completion: @escaping (Result<Void, Error>) -> Void)
+}
+
+final class ImagesListService: ImagesListServiceProtocol {
     
     private lazy var dateFormatter = {
         return ISO8601DateFormatter()
@@ -19,7 +26,7 @@ final class ImagesListService {
     private var task: URLSessionTask?
     private let tokenStorage = OAuth2TokenStorage.shared
     
-    static let shared = ImagesListService()
+    static let shared: ImagesListServiceProtocol = ImagesListService()
     static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
     
     func fetchPhotosNextPage() {

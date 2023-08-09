@@ -22,8 +22,12 @@ protocol ImagesListPresenterProtocol {
 final class ImagesListPresenter: ImagesListPresenterProtocol {
     weak var view: ImagesListViewControllerProtocol?
     private var photos: [Photo] = []
-    private let imagesListService = ImagesListService.shared
+    private let imagesListService: ImagesListServiceProtocol
     private var imagesListServiceObserver: NSObjectProtocol?
+    
+    init(imagesListService: ImagesListServiceProtocol = ImagesListService.shared) {
+        self.imagesListService = imagesListService
+    }
     
     func addObserver() {
         imagesListServiceObserver = NotificationCenter.default.addObserver(

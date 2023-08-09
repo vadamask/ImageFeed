@@ -40,7 +40,7 @@ final class ProfileViewTests: XCTestCase {
    
     func testConvertResultToViewModel() {
         // given
-        let presenter = ProfileViewPresenter(profileService: StubProfileService.shared)
+        let presenter = ProfileViewPresenter(profileService: ProfileServiceStub(), profileImageService: ProfileImageServiceStub())
         
         // when
         let model = presenter.convertResultToViewModel()
@@ -54,10 +54,7 @@ final class ProfileViewTests: XCTestCase {
     func testPresenterCallsShowAlert() {
         // given
         let viewController = ProfileViewControllerSpy()
-        let presenter = ProfileViewPresenter(
-            profileService: StubProfileService.shared,
-            profileImageService: ProfileImageService.shared
-        )
+        let presenter = ProfileViewPresenter(profileService: ProfileServiceStub(), profileImageService: ProfileImageServiceStub())
         viewController.presenter = presenter
         presenter.view = viewController
        
@@ -71,10 +68,7 @@ final class ProfileViewTests: XCTestCase {
     func testPresenterCallsSetAvatar() {
         // given
         let viewController = ProfileViewControllerSpy()
-        let presenter = ProfileViewPresenter(
-            profileService: StubProfileService.shared,
-            profileImageService: StubProfileImageService.shared
-        )
+        let presenter = ProfileViewPresenter(profileService: ProfileServiceStub(), profileImageService: ProfileImageServiceStub())
         viewController.presenter = presenter
         presenter.view = viewController
        
@@ -123,16 +117,16 @@ final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
     }
 }
 
-final class StubProfileService: ProfileServiceProtocol {
-    static var shared: ProfileServiceProtocol = StubProfileService()
+final class ProfileServiceStub: ProfileServiceProtocol {
+    static var shared: ProfileServiceProtocol = ProfileServiceStub()
     var profile: ProfileResult? = ProfileResult(username: "vadamask", firstName: "Vadim", lastName: "Shishkov", bio: "ios developer")
 
     func fetchProfile(_ token: String, completion: @escaping (Result<ProfileResult, Error>) -> Void) {
     }
 }
 
-final class StubProfileImageService: ProfileImageServiceProtocol {
-    static var shared: ProfileImageServiceProtocol = StubProfileImageService()
+final class ProfileImageServiceStub: ProfileImageServiceProtocol {
+    static var shared: ProfileImageServiceProtocol = ProfileImageServiceStub()
     
     var avatarURL: String? = "example.com"
     

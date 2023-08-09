@@ -281,9 +281,9 @@
 			isa = PBXGroup;
 			children = (
 				DD0FE2242A69C47200D59F27 /* ImagesListService.swift */,
-				DD8107342A470C5700FD870C /* OAuth2Service.swift */,
 				DD6AAC972A5985D70084D92F /* ProfileService.swift */,
 				DD6AAC9B2A59E9200084D92F /* ProfileImageService.swift */,
+				DD8107342A470C5700FD870C /* OAuth2Service.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
