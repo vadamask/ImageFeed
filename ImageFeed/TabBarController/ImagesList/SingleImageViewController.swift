@@ -10,6 +10,8 @@ import Kingfisher
 
 final class SingleImageViewController: UIViewController {
     
+    var photo: Photo!
+    
     private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -43,21 +45,19 @@ final class SingleImageViewController: UIViewController {
         return button
     }()
     
-    var photo: Photo!
-    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        scrollView.delegate = self
         loadPhoto()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        view.backgroundColor = .ypBlack
-        setupScrollView()
+        setupViews()
         setupConstraints()
     }
     
@@ -90,11 +90,6 @@ final class SingleImageViewController: UIViewController {
     }
     
     private func setupConstraints() {
-        view.addSubview(scrollView)
-        scrollView.addSubview(imageView)
-        view.addSubview(backButton)
-        view.addSubview(shareButton)
-        
         NSLayoutConstraint.activate([
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
@@ -113,8 +108,13 @@ final class SingleImageViewController: UIViewController {
         ])
     }
     
-    private func setupScrollView() {
-        scrollView.delegate = self
+    private func setupViews() {
+        view.addSubview(scrollView)
+        scrollView.addSubview(imageView)
+        view.addSubview(backButton)
+        view.addSubview(shareButton)
+        
+        view.backgroundColor = .ypBlack
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.2
         scrollView.showsVerticalScrollIndicator = false
@@ -149,6 +149,19 @@ final class SingleImageViewController: UIViewController {
         )
         present(activityVC, animated: true)
     }
+    
+    private func recenterImage() {
+        let imageViewSize = imageView.frame.size
+        let scrollViewSize = scrollView.bounds.size
+        
+        let horizontalSpace = imageViewSize.width < scrollViewSize.width ?
+        (scrollViewSize.width - imageViewSize.width) / 2 : 0
+        
+        let verticalSpace = imageViewSize.height < scrollViewSize.height ?
+        (scrollViewSize.height - imageViewSize.height) / 2 : 0
+        
+        scrollView.contentInset = UIEdgeInsets(top: verticalSpace, left: horizontalSpace, bottom: verticalSpace, right: horizontalSpace)
+    }
 }
 
 // MARK: - UIScrollViewDelegate
@@ -156,5 +169,8 @@ final class SingleImageViewController: UIViewController {
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         imageView
+    }
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        recenterImage()
     }
 }
