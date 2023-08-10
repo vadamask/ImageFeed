@@ -77,11 +77,13 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
             guard let self = self else { return }
             self.cleanAndSwitchToSplashVC()
         }
+        yesAction.accessibilityIdentifier = "Ok"
         let noAction = UIAlertAction(title: "Нет", style: .default) { _ in
             alertController.dismiss(animated: true)
         }
         alertController.addAction(yesAction)
         alertController.addAction(noAction)
+        alertController.view.accessibilityIdentifier = "Alert"
         view?.showAlertController(alertController)
     }
     
