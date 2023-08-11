@@ -37,7 +37,7 @@ final class ImagesListService: ImagesListServiceProtocol {
         
         guard var request = URLRequest.makeHTTPRequest(path: "/photos?page=\(nextPage)", httpMethod: "GET"),
               let token = tokenStorage.bearerToken else {
-            assertionFailure("Failed to make HTTP request")
+            print("Failed to make HTTP request")
             return
         }
         
@@ -64,7 +64,7 @@ final class ImagesListService: ImagesListServiceProtocol {
                     NotificationCenter.default.post(name: Self.didChangeNotification, object: self)
                 }
             case .failure(let error):
-                assertionFailure(error.description(of: error))
+                print(error.localizedDescription)
             }
         }
         self.task = task
@@ -77,46 +77,48 @@ final class ImagesListService: ImagesListServiceProtocol {
         
         guard var request = request,
               let token = tokenStorage.bearerToken else {
-            assertionFailure("Failed to make HTTP request")
+            print("Failed to make HTTP request")
             return
         }
         
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
-        let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+        let task = URLSession.shared.dataTask(with: request) { [weak self] _, response, error in
             guard let self = self else { return }
             
-            if let error = error {
-                DispatchQueue.main.async {
-                    completion(.failure(NetworkError.urlSessionError(error)))
-                }
-            }
-            
             if let response = response as? HTTPURLResponse {
-                if !(200..<300 ~= response.statusCode) {
+                let code = response.statusCode
+                
+                if 200..<300 ~= code {
+                    DispatchQueue.main.async {
+                        if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+                            let oldPhoto = self.photos[index]
+                            let newPhoto = Photo(
+                                id: oldPhoto.id,
+                                size: oldPhoto.size,
+                                createdAt: oldPhoto.createdAt,
+                                welcomeDescription: oldPhoto.welcomeDescription,
+                                thumbImageURL: oldPhoto.thumbImageURL,
+                                largeImageURL: oldPhoto.largeImageURL,
+                                isLiked: !oldPhoto.isLiked
+                            )
+                            self.photos[index] = newPhoto
+                            completion(.success(()))
+                        } else {
+                            assertionFailure("Photo not found")
+                        }
+                    }
+                } else {
                     DispatchQueue.main.async {
                         completion(.failure(NetworkError.httpStatusCode(response.statusCode)))
                     }
                 }
-            }
-            
-            DispatchQueue.main.async {
-                if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
-                    let oldPhoto = self.photos[index]
-                    let newPhoto = Photo(
-                        id: oldPhoto.id,
-                        size: oldPhoto.size,
-                        createdAt: oldPhoto.createdAt,
-                        welcomeDescription: oldPhoto.welcomeDescription,
-                        thumbImageURL: oldPhoto.thumbImageURL,
-                        largeImageURL: oldPhoto.largeImageURL,
-                        isLiked: !oldPhoto.isLiked
-                    )
-                    self.photos[index] = newPhoto
-                    completion(.success(()))
-                } else {
-                    assertionFailure("Photo not found")
+            } else if let error = error {
+                DispatchQueue.main.async {
+                    completion(.failure(NetworkError.urlSessionError(error)))
                 }
+            } else {
+                assertionFailure("Unknown error")
             }
         }
         task.resume()

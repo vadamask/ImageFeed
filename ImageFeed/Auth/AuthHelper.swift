@@ -8,7 +8,7 @@
 import Foundation
 
 protocol AuthHelperProtocol {
-    func authRequest() -> URLRequest
+    func authRequest() -> URLRequest?
     func code(from url: URL) -> String?
 }
 
@@ -19,9 +19,12 @@ class AuthHelper: AuthHelperProtocol {
         self.configuration = configuration
     }
     
-    func authRequest() -> URLRequest {
-        let url = authURL()
-        return URLRequest(url: url)
+    func authRequest() -> URLRequest? {
+        if let url = authURL() {
+            return URLRequest(url: url)
+        } else {
+            return nil
+        }
     }
     
     func code(from url: URL) -> String? {
@@ -36,7 +39,7 @@ class AuthHelper: AuthHelperProtocol {
         }
     }
     
-    func authURL() -> URL {
+    func authURL() -> URL? {
         var urlComponents = URLComponents(string: configuration.unsplashAuthorizeURLString)
         urlComponents?.queryItems = [
             URLQueryItem(name: "client_id", value: configuration.accessKey),
@@ -49,9 +52,8 @@ class AuthHelper: AuthHelperProtocol {
            let url = urlComponents.url {
             return url
         } else {
-            assertionFailure("Failed to make URL from \(urlComponents as Any)")
-            // FIXME: - remove force unwrap
-            return urlComponents!.url!
+            print("Failed to make URL from \(urlComponents as Any)")
+            return nil
         }
     }
 }

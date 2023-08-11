@@ -47,7 +47,6 @@ final class OAuth2Service {
     }
     
     private func makeRequest(with code: String) -> URLRequest? {
-        
         guard var urlComponents = URLComponents(string: configuration.accessTokenURL) else {
             assertionFailure("Failed to make URLComponents from \(configuration.accessTokenURL)")
             return nil

@@ -24,8 +24,11 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     }
     
     func viewDidLoad() {
-        let request = authHelper.authRequest()
-        view?.load(request)
+        if let request = authHelper.authRequest() {
+            view?.load(request)
+        } else {
+            assertionFailure("Failed with making request")
+        }
     }
     
     func shouldHideProgress(for value: Float) -> Bool {

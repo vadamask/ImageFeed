@@ -91,7 +91,7 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
                 self.photos[indexPath.row] = imagesListService.photos[indexPath.row]
                 view?.reloadRows(at: [indexPath])
             case .failure(let error):
-                assertionFailure(error.description(of: error))
+                print(error.localizedDescription)
             }
             view?.dismissProgressHUD()
         }
