@@ -10,7 +10,7 @@ import XCTest
 
 final class ProfileViewTests: XCTestCase {
     
-    func testViewControllerCallsAddObserver() {
+    func testViewControllerCallsViewDidLoad() {
         // given
         let viewController = ProfileViewController()
         let presenter = ProfileViewPresenterSpy()
@@ -21,34 +21,24 @@ final class ProfileViewTests: XCTestCase {
         _ = viewController.view
         
         // then
-        XCTAssertTrue(presenter.addObserverCalled)
-    }
-    
-    func testViewControllerCallsRemoveObserver() {
-        // given
-        var viewController: ProfileViewController? = ProfileViewController()
-        let presenter = ProfileViewPresenterSpy()
-        viewController?.presenter = presenter
-        presenter.view = viewController
-        
-        // when
-        viewController = nil
-        
-        // then
-        XCTAssertTrue(presenter.removeObserverCalled)
+        XCTAssertTrue(presenter.viewDidLoadCalled)
     }
    
     func testConvertResultToViewModel() {
         // given
+        let viewController = ProfileViewControllerSpy()
         let presenter = ProfileViewPresenter(profileService: ProfileServiceStub(), profileImageService: ProfileImageServiceStub())
+        viewController.presenter = presenter
+        presenter.view = viewController
         
         // when
-        let model = presenter.convertResultToViewModel()
+        presenter.viewDidLoad()
         
         // then
-        XCTAssertEqual(model?.name, "Vadim Shishkov")
-        XCTAssertEqual(model?.userName, "@vadamask")
-        XCTAssertEqual(model?.description, "ios developer")
+        XCTAssertTrue(viewController.updateProfileDetailsCalled)
+        XCTAssertEqual(viewController.model?.name, "Vadim Shishkov")
+        XCTAssertEqual(viewController.model?.userName, "@vadamask")
+        XCTAssertEqual(viewController.model?.description, "ios developer")
     }
     
     func testPresenterCallsShowAlert() {
@@ -73,7 +63,7 @@ final class ProfileViewTests: XCTestCase {
         presenter.view = viewController
        
         // when
-        presenter.checkImageURL()
+        presenter.viewDidLoad()
         
         // then
         XCTAssertTrue(viewController.setAvatarCalled)
@@ -83,31 +73,30 @@ final class ProfileViewTests: XCTestCase {
 
 final class ProfileViewPresenterSpy: ProfileViewPresenterProtocol {
     weak var view: ProfileViewControllerProtocol?
-    var addObserverCalled = false
+    var viewDidLoadCalled = false
     var removeObserverCalled = false
     
-    func addObserverForImageURL() {
-        addObserverCalled = true
+    func viewDidLoad() {
+        viewDidLoadCalled = true
     }
-    func removeObserverForImageURL() {
-        removeObserverCalled = true
-    }
-    func cleanAndSwitchToSplashVC() {}
+    
+    func viewWillAppear() {}
+    func viewWillDisappear() {}
     func didTapLogoutButton() {}
-    
-    func convertResultToViewModel() -> ProfileViewModel? {
-        return nil
-    }
-    
-    func checkImageURL() {}
 }
 
 final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
     var presenter: ProfileViewPresenterProtocol?
     var showAlertControllerCalled = false
     var setAvatarCalled = false
+    var updateProfileDetailsCalled = false
     var url: URL?
+    var model: ProfileViewModel?
     
+    func updateProfileDetails(with model: ProfileViewModel) {
+        updateProfileDetailsCalled = true
+        self.model = model
+    }
     func showAlertController(_ alertController: UIAlertController) {
         showAlertControllerCalled = true
     }
@@ -120,17 +109,12 @@ final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
 final class ProfileServiceStub: ProfileServiceProtocol {
     static var shared: ProfileServiceProtocol = ProfileServiceStub()
     var profile: ProfileResult? = ProfileResult(username: "vadamask", firstName: "Vadim", lastName: "Shishkov", bio: "ios developer")
-
-    func fetchProfile(_ token: String, completion: @escaping (Result<ProfileResult, Error>) -> Void) {
-    }
+    func fetchProfile(_ token: String, completion: @escaping (Result<ProfileResult, Error>) -> Void) {}
 }
 
 final class ProfileImageServiceStub: ProfileImageServiceProtocol {
+    var didChangeNotification = Notification.Name("test")
     static var shared: ProfileImageServiceProtocol = ProfileImageServiceStub()
-    
     var avatarURL: String? = "example.com"
-    
-    func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {
-        
-    }
+    func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {}
 }

@@ -15,14 +15,14 @@ protocol ProfileImageServiceProtocol {
 
 final class ProfileImageService: ProfileImageServiceProtocol {
     
+    static let didChangeNotification = Notification.Name("ProfileImageProviderDidChange")
+    static let shared: ProfileImageServiceProtocol = ProfileImageService()
+    
     private init(){}
     private var task: URLSessionTask?
     private(set) var avatarURL: String?
     private let urlSession = URLSession.shared
     private let tokenStorage = OAuth2TokenStorage.shared
-    
-    static let didChangeNotification = Notification.Name("ProfileImageProviderDidChange")
-    static let shared: ProfileImageServiceProtocol = ProfileImageService()
     
     func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)

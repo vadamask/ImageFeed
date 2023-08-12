@@ -10,12 +10,10 @@ import WebKit
 
 protocol ProfileViewPresenterProtocol {
     var view: ProfileViewControllerProtocol? { get set }
-    func addObserverForImageURL()
-    func removeObserverForImageURL()
-    func cleanAndSwitchToSplashVC()
+    func viewDidLoad()
+    func viewWillAppear()
+    func viewWillDisappear()
     func didTapLogoutButton()
-    func convertResultToViewModel() -> ProfileViewModel?
-    func checkImageURL()
 }
 
 final class ProfileViewPresenter: ProfileViewPresenterProtocol {
@@ -29,46 +27,17 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
         self.profileImageService = profileImageService
     }
     
-    func addObserverForImageURL() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(updateAvatar(notification:)),
-            name: ProfileImageService.didChangeNotification,
-            object: nil
-        )
+    func viewDidLoad() {
+        convertResultToViewModel()
+        checkImageURL()
     }
     
-    func removeObserverForImageURL() {
-        NotificationCenter.default.removeObserver(
-            self,
-            name: ProfileImageService.didChangeNotification,
-            object: nil
-        )
+    func viewWillAppear() {
+        addObserverForImageURL()
     }
     
-    func convertResultToViewModel() -> ProfileViewModel? {
-        guard let profile = profileService.profile else { return nil }
-        let viewModel = ProfileViewModel(
-            name: "\(profile.firstName) \(profile.lastName ?? "")",
-            userName: "@\(profile.username)",
-            description: profile.bio ?? ""
-        )
-        return viewModel
-    }
-    
-    func checkImageURL() {
-        if let imageURL = profileImageService.avatarURL,
-           let url = URL(string: imageURL) {
-            view?.setAvatar(url)
-        }
-    }
-    
-    func cleanAndSwitchToSplashVC() {
-        cleanCookies()
-        OAuth2TokenStorage.shared.removeToken()
-        let window = UIApplication.shared.windows.first
-        let splashVC = SplashViewController()
-        window?.rootViewController = splashVC
+    func viewWillDisappear() {
+        removeObserverForImageURL()
     }
     
     func didTapLogoutButton() {
@@ -94,6 +63,48 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
             let url = URL(string: profileImageURL)
         else { return }
         view?.setAvatar(url)
+    }
+    
+    private func addObserverForImageURL() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateAvatar(notification:)),
+            name: ProfileImageService.didChangeNotification,
+            object: nil
+        )
+    }
+    
+    private func removeObserverForImageURL() {
+        NotificationCenter.default.removeObserver(
+            self,
+            name: ProfileImageService.didChangeNotification,
+            object: nil
+        )
+    }
+    
+    private func convertResultToViewModel() {
+        guard let profile = profileService.profile else { return }
+        let viewModel = ProfileViewModel(
+            name: "\(profile.firstName) \(profile.lastName ?? "")",
+            userName: "@\(profile.username)",
+            description: profile.bio ?? ""
+        )
+        view?.updateProfileDetails(with: viewModel)
+    }
+    
+    private func checkImageURL() {
+        if let imageURL = profileImageService.avatarURL,
+           let url = URL(string: imageURL) {
+            view?.setAvatar(url)
+        }
+    }
+    
+    private func cleanAndSwitchToSplashVC() {
+        cleanCookies()
+        OAuth2TokenStorage.shared.removeToken()
+        let window = UIApplication.shared.windows.first
+        let splashVC = SplashViewController()
+        window?.rootViewController = splashVC
     }
     
     private func cleanCookies() {

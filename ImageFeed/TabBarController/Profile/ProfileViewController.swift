@@ -12,6 +12,7 @@ protocol ProfileViewControllerProtocol: AnyObject {
     var presenter: ProfileViewPresenterProtocol? { get set }
     func showAlertController(_ alertController: UIAlertController)
     func setAvatar(_ url: URL)
+    func updateProfileDetails(with model: ProfileViewModel)
 }
 
 final class ProfileViewController: UIViewController & ProfileViewControllerProtocol {
@@ -20,6 +21,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -65,18 +67,19 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter?.addObserverForImageURL()
-        updateProfileDetails()
+        presenter?.viewDidLoad()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        presenter?.viewWillAppear()
         setupViews()
         setupConstraints()
     }
     
-    deinit {
-        presenter?.removeObserverForImageURL()
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        presenter?.viewWillDisappear()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -97,6 +100,16 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
             placeholder: UIImage(named: "placeholder"),
             options: [.processor(processor), .transition(.fade(1))]
         )
+    }
+    
+    func updateProfileDetails(with model: ProfileViewModel) {
+        nameLabel.text = model.name
+        userNameLabel.text = model.userName
+        descriptionLabel.text = model.description
+    }
+    
+    @objc private func logoutButtonPressed() {
+        presenter?.didTapLogoutButton()
     }
     
     private func setupViews() {
@@ -129,18 +142,5 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
             logOutButton.heightAnchor.constraint(equalToConstant: 44),
             logOutButton.widthAnchor.constraint(equalToConstant: 44)
         ])
-    }
-    
-    private func updateProfileDetails() {
-        if let model = presenter?.convertResultToViewModel() {
-            nameLabel.text = model.name
-            userNameLabel.text = model.userName
-            descriptionLabel.text = model.description
-        }
-        presenter?.checkImageURL()
-    }
-    
-    @objc private func logoutButtonPressed() {
-        presenter?.didTapLogoutButton()
     }
 }
