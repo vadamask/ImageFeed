@@ -18,6 +18,8 @@ protocol ProfileViewControllerProtocol: AnyObject {
 final class ProfileViewController: UIViewController & ProfileViewControllerProtocol {
     
     var presenter: ProfileViewPresenterProtocol?
+    private var labelsGradientViews: Set<GradientView> = []
+    private var profileImageGradientView: GradientView!
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -28,7 +30,6 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "name"
         label.textColor = .ypWhite
         label.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -37,7 +38,6 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     
     private let userNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "@name"
         label.textColor = .ypGray
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -46,7 +46,6 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Hello, World!"
         label.textColor = .ypWhite
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -68,6 +67,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     override func viewDidLoad() {
         super.viewDidLoad()
         presenter?.viewDidLoad()
+        addGradientViews()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -98,14 +98,19 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         profileImageView.kf.setImage(
             with: url,
             placeholder: UIImage(named: "placeholder"),
-            options: [.processor(processor), .transition(.fade(1))]
-        )
+            options: [.processor(processor)]
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            self.profileImageGradientView.removeAllAnimations()
+            self.profileImageGradientView.removeFromSuperview()
+        }
     }
     
     func updateProfileDetails(with model: ProfileViewModel) {
         nameLabel.text = model.name
         userNameLabel.text = model.userName
         descriptionLabel.text = model.description
+        removeLabelAnimations()
     }
     
     @objc private func logoutButtonPressed() {
@@ -130,12 +135,18 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
             
             nameLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 8),
             nameLabel.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor),
+            nameLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 200),
+            nameLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 28),
             
             userNameLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
             userNameLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
+            userNameLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 100),
+            userNameLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 18),
             
             descriptionLabel.topAnchor.constraint(equalTo: userNameLabel.bottomAnchor, constant: 8),
             descriptionLabel.leadingAnchor.constraint(equalTo: userNameLabel.leadingAnchor),
+            descriptionLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 100),
+            descriptionLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 18),
             
             logOutButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
             logOutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
@@ -143,4 +154,33 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
             logOutButton.widthAnchor.constraint(equalToConstant: 44)
         ])
     }
+    
+    func addGradientViews() {
+        profileImageGradientView = GradientView(frame: CGRect(x: 0, y: 0, width: 70, height: 70), cornerRadius: 35)
+        let nameLabelGradientView = GradientView(frame: CGRect(x: 0, y: 0, width: 200, height: 28), cornerRadius: 14)
+        let userNameLabelGradientView = GradientView(frame: CGRect(x: 0, y: 0, width: 100, height: 18), cornerRadius: 9)
+        let descriptionLabelGradientView = GradientView(frame: CGRect(x: 0, y: 0, width: 100, height: 18), cornerRadius: 9)
+        
+        profileImageView.addSubview(profileImageGradientView)
+        nameLabel.addSubview(nameLabelGradientView)
+        userNameLabel.addSubview(userNameLabelGradientView)
+        descriptionLabel.addSubview(descriptionLabelGradientView)
+        
+        labelsGradientViews.insert(nameLabelGradientView)
+        labelsGradientViews.insert(userNameLabelGradientView)
+        labelsGradientViews.insert(descriptionLabelGradientView)
+        
+        [profileImageGradientView, nameLabelGradientView, userNameLabelGradientView, descriptionLabelGradientView].forEach { view in
+            view?.animateGradientLayerLocations()
+        }
+    }
+    
+    func removeLabelAnimations() {
+        labelsGradientViews.forEach { view in
+            view.removeAllAnimations()
+            view.removeFromSuperview()
+        }
+    }
+    
+    
 }
