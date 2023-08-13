@@ -17,10 +17,7 @@ final class SplashViewController: UIViewController {
     }()
     
     private let networkService = OAuth2Service.shared
-    private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
     private let tokenStorage = OAuth2TokenStorage.shared
-    private let imagesListService = ImagesListService.shared
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
@@ -34,8 +31,8 @@ final class SplashViewController: UIViewController {
      
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if let token = tokenStorage.bearerToken {
-            fetchProfile(with: token)
+        if let _ = tokenStorage.bearerToken {
+            switchToTabBarController()
         } else {
             if !networkService.isLoading {
                 switchToAuthViewController()
@@ -99,26 +96,12 @@ extension SplashViewController: AuthViewControllerDelegate {
     }
     
     private func fetchOAuthToken(with code: String) {
+        UIBlockingProgressHUD.show()
         networkService.fetchAuthToken(code: code) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let token):
                 tokenStorage.bearerToken = token
-                fetchProfile(with: token)
-            case .failure(let error):
-                UIBlockingProgressHUD.dismiss()
-                showAlert(with: error)
-            }
-        }
-    }
-    
-    private func fetchProfile(with token: String) {
-        UIBlockingProgressHUD.show()
-        profileService.fetchProfile(token) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let profile):
-                profileImageService.fetchProfileImageURL(username: profile.username) { _ in }
                 UIBlockingProgressHUD.dismiss()
                 switchToTabBarController()
             case .failure(let error):

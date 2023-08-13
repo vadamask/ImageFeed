@@ -61,10 +61,11 @@ final class ProfileViewTests: XCTestCase {
         let presenter = ProfileViewPresenter(profileService: ProfileServiceStub(), profileImageService: ProfileImageServiceStub())
         viewController.presenter = presenter
         presenter.view = viewController
-       
-        // when
-        presenter.viewDidLoad()
         
+        // when
+        presenter.viewWillAppear()
+        presenter.viewDidLoad()
+
         // then
         XCTAssertTrue(viewController.setAvatarCalled)
         XCTAssertEqual(viewController.url?.absoluteString, "example.com")
@@ -109,12 +110,21 @@ final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
 final class ProfileServiceStub: ProfileServiceProtocol {
     static var shared: ProfileServiceProtocol = ProfileServiceStub()
     var profile: ProfileResult? = ProfileResult(username: "vadamask", firstName: "Vadim", lastName: "Shishkov", bio: "ios developer")
-    func fetchProfile(_ token: String, completion: @escaping (Result<ProfileResult, Error>) -> Void) {}
+    
+    func fetchProfile(completion: @escaping (Result<ProfileResult, Error>) -> Void) {
+        completion(.success(self.profile!))
+    }
 }
 
 final class ProfileImageServiceStub: ProfileImageServiceProtocol {
-    var didChangeNotification = Notification.Name("test")
     static var shared: ProfileImageServiceProtocol = ProfileImageServiceStub()
+    var didChangeNotification = Notification.Name("test")
     var avatarURL: String? = "example.com"
-    func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {}
+    func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {
+        NotificationCenter.default.post(
+            name: ProfileImageService.didChangeNotification,
+            object: self,
+            userInfo: ["URL": avatarURL]
+        )
+    }
 }

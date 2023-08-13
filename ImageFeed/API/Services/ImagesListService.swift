@@ -103,7 +103,7 @@ final class ImagesListService: ImagesListServiceProtocol {
                                 isLiked: !oldPhoto.isLiked
                             )
                             self.photos[index] = newPhoto
-                            completion(.success(()))
+                            completion(.success(Void()))
                         } else {
                             assertionFailure("Photo not found")
                         }
