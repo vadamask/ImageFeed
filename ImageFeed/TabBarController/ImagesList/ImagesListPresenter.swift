@@ -9,14 +9,13 @@ import Foundation
 
 protocol ImagesListPresenterProtocol {
     var view: ImagesListViewControllerProtocol? { get }
+    func viewDidLoad()
     func numberOfRowsInSection() -> Int
     func heightForRow(at indexPath: IndexPath, with tableViewWidth: CGFloat) -> CGFloat
-    func didSelectRow(at indexPath: IndexPath)
-    func willDisplayCell(at indexPath: IndexPath)
+    func rowDidSelect(at indexPath: IndexPath)
+    func cellWillDisplay(at indexPath: IndexPath)
     func likeDidTapped(at indexPath: IndexPath)
-    func createModel(at indexPath: IndexPath) -> ImagesListCellModel
-    func fetchPhotosNextPage()
-    func addObserver()
+    func modelForCell(at indexPath: IndexPath) -> ImagesListCellModel
 }
 
 final class ImagesListPresenter: ImagesListPresenterProtocol {
@@ -29,20 +28,9 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
         self.imagesListService = imagesListService
     }
     
-    func addObserver() {
-        imagesListServiceObserver = NotificationCenter.default.addObserver(
-            forName: ImagesListService.didChangeNotification,
-            object: nil,
-            queue: .main,
-            using: { [weak self] _ in
-                guard let self = self else { return }
-                self.calculateIndexPaths()
-            }
-        )
-    }
-    
-    func fetchPhotosNextPage() {
-        imagesListService.fetchPhotosNextPage()
+    func viewDidLoad() {
+        addObserver()
+        fetchPhotosNextPage()
     }
     
     func numberOfRowsInSection() -> Int {
@@ -59,7 +47,7 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
         return imageViewHeight
     }
     
-    func createModel(at indexPath: IndexPath) -> ImagesListCellModel {
+    func modelForCell(at indexPath: IndexPath) -> ImagesListCellModel {
         ImagesListCellModel(
             imageURL: photos[indexPath.row].thumbImageURL,
             imageIsLiked: photos[indexPath.row].isLiked,
@@ -67,7 +55,7 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
         )
     }
     
-    func didSelectRow(at indexPath: IndexPath) {
+    func rowDidSelect(at indexPath: IndexPath) {
         let vc = SingleImageViewController()
         let photo = photos[indexPath.row]
         vc.photo = photo
@@ -75,7 +63,7 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
         view?.showSingleImageVC(vc)
     }
     
-    func willDisplayCell(at indexPath: IndexPath) {
+    func cellWillDisplay(at indexPath: IndexPath) {
         if indexPath.row == photos.count - 1 {
             imagesListService.fetchPhotosNextPage()
         }
@@ -95,6 +83,22 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
             }
             view?.dismissProgressHUD()
         }
+    }
+    
+    private func addObserver() {
+        imagesListServiceObserver = NotificationCenter.default.addObserver(
+            forName: ImagesListService.didChangeNotification,
+            object: nil,
+            queue: .main,
+            using: { [weak self] _ in
+                guard let self = self else { return }
+                self.calculateIndexPaths()
+            }
+        )
+    }
+    
+    private func fetchPhotosNextPage() {
+        imagesListService.fetchPhotosNextPage()
     }
     
     private func calculateIndexPaths() {

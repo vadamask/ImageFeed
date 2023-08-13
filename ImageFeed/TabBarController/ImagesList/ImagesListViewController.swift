@@ -38,8 +38,7 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        presenter?.addObserver()
-        presenter?.fetchPhotosNextPage()
+        presenter?.viewDidLoad()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -91,7 +90,8 @@ extension ImagesListViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
         guard let imageListCell = cell as? ImagesListCell else { preconditionFailure("Casting error") }
         imageListCell.delegate = self
-        if let model = presenter?.createModel(at: indexPath) {
+        
+        if let model = presenter?.modelForCell(at: indexPath) {
             imageListCell.configure(with: model, at: indexPath)
         }
         return imageListCell
@@ -107,18 +107,18 @@ extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        presenter?.didSelectRow(at: indexPath)
+        presenter?.rowDidSelect(at: indexPath)
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        presenter?.willDisplayCell(at: indexPath)
+        presenter?.cellWillDisplay(at: indexPath)
     }
 }
 
 //MARK: - ImagesListCellDelegate
 
 extension ImagesListViewController: ImagesListCellDelegate {
-    func imagesListCellDidTapLike(at indexPath: IndexPath) {
+    func likeButtonDidTapped(at indexPath: IndexPath) {
         presenter?.likeDidTapped(at: indexPath)
     }
 }

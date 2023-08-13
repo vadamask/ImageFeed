@@ -9,7 +9,7 @@ import UIKit
 import Kingfisher
 
 protocol ImagesListCellDelegate: AnyObject {
-    func imagesListCellDidTapLike(at indexPath: IndexPath)
+    func likeButtonDidTapped(at indexPath: IndexPath)
 }
 
 final class ImagesListCell: UITableViewCell {
@@ -96,7 +96,7 @@ final class ImagesListCell: UITableViewCell {
             assertionFailure("index path is nil")
             return
         }
-        delegate?.imagesListCellDidTapLike(at: indexPath)
+        delegate?.likeButtonDidTapped(at: indexPath)
     }
     
     private func setupViews() {
