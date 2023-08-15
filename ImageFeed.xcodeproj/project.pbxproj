@@ -27,7 +27,7 @@
 		DD6AAC982A5985D70084D92F /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6AAC972A5985D70084D92F /* ProfileService.swift */; };
 		DD6AAC9A2A598FD80084D92F /* URLRequest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6AAC992A598FD80084D92F /* URLRequest+Extensions.swift */; };
 		DD6AAC9C2A59E9200084D92F /* ProfileImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6AAC9B2A59E9200084D92F /* ProfileImageService.swift */; };
-		DD6AACA42A5BF9130084D92F /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6AACA32A5BF9130084D92F /* Errors.swift */; };
+		DD6AACA42A5BF9130084D92F /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6AACA32A5BF9130084D92F /* NetworkError.swift */; };
 		DD6AACA62A5C77B30084D92F /* URLSession+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6AACA52A5C77B30084D92F /* URLSession+Extensions.swift */; };
 		DD6AACA92A5D42980084D92F /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = DD6AACA82A5D42980084D92F /* Kingfisher */; };
 		DD6AACAC2A5D9B770084D92F /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = DD6AACAB2A5D9B770084D92F /* SwiftKeychainWrapper */; };
@@ -36,6 +36,7 @@
 		DD8107352A470C5700FD870C /* OAuth2Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8107342A470C5700FD870C /* OAuth2Service.swift */; };
 		DD8107372A471BF400FD870C /* OAuth2TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8107362A471BF400FD870C /* OAuth2TokenStorage.swift */; };
 		DD81073A2A4820E200FD870C /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8107392A4820E200FD870C /* SplashViewController.swift */; };
+		DD8744A62A8C0F96002606E3 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8744A52A8C0F96002606E3 /* AppError.swift */; };
 		DD8F10EB2A82B816002D4846 /* OptionalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8F10EA2A82B816002D4846 /* OptionalTests.swift */; };
 		DD8F10ED2A82B9EE002D4846 /* URLRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8F10EC2A82B9EE002D4846 /* URLRequestTests.swift */; };
 		DDA239A92A44AC28005A69E5 /* AuthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA239A82A44AC28005A69E5 /* AuthConfiguration.swift */; };
@@ -93,13 +94,14 @@
 		DD6AAC972A5985D70084D92F /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		DD6AAC992A598FD80084D92F /* URLRequest+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+Extensions.swift"; sourceTree = "<group>"; };
 		DD6AAC9B2A59E9200084D92F /* ProfileImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageService.swift; sourceTree = "<group>"; };
-		DD6AACA32A5BF9130084D92F /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		DD6AACA32A5BF9130084D92F /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		DD6AACA52A5C77B30084D92F /* URLSession+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Extensions.swift"; sourceTree = "<group>"; };
 		DD6AACAF2A5DA2C20084D92F /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		DD6CB7382A86BA2200D3F9E7 /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		DD8107342A470C5700FD870C /* OAuth2Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2Service.swift; sourceTree = "<group>"; };
 		DD8107362A471BF400FD870C /* OAuth2TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2TokenStorage.swift; sourceTree = "<group>"; };
 		DD8107392A4820E200FD870C /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
+		DD8744A52A8C0F96002606E3 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		DD8F10EA2A82B816002D4846 /* OptionalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalTests.swift; sourceTree = "<group>"; };
 		DD8F10EC2A82B9EE002D4846 /* URLRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequestTests.swift; sourceTree = "<group>"; };
 		DDA239A82A44AC28005A69E5 /* AuthConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfiguration.swift; sourceTree = "<group>"; };
@@ -275,7 +277,8 @@
 		DDB7123B2A6D7F8D004120F6 /* API */ = {
 			isa = PBXGroup;
 			children = (
-				DD6AACA32A5BF9130084D92F /* Errors.swift */,
+				DD6AACA32A5BF9130084D92F /* NetworkError.swift */,
+				DD8744A52A8C0F96002606E3 /* AppError.swift */,
 				DDB7123C2A6D80CA004120F6 /* Models */,
 				DDBA19412A7BFB7300E1C508 /* Services */,
 			);
@@ -519,13 +522,14 @@
 				DD049C212A213DD800F2A8D3 /* UIColor+Extensions.swift in Sources */,
 				DD6AAC9A2A598FD80084D92F /* URLRequest+Extensions.swift in Sources */,
 				DDA239AC2A44B2F4005A69E5 /* AuthViewController.swift in Sources */,
+				DD8744A62A8C0F96002606E3 /* AppError.swift in Sources */,
 				DD146C592A7E71BE00069136 /* ProfileViewPresenter.swift in Sources */,
 				DDA239A92A44AC28005A69E5 /* AuthConfiguration.swift in Sources */,
 				DD0FE2272A6A5A9600D59F27 /* Optional+Extensions.swift in Sources */,
 				DD6AACB02A5DA2C20084D92F /* TabBarController.swift in Sources */,
 				DDB712462A6D8293004120F6 /* ProfileResult.swift in Sources */,
 				DDBA19472A7E493B00E1C508 /* AuthHelper.swift in Sources */,
-				DD6AACA42A5BF9130084D92F /* Errors.swift in Sources */,
+				DD6AACA42A5BF9130084D92F /* NetworkError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

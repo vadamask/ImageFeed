@@ -11,7 +11,7 @@ protocol ImagesListServiceProtocol {
     static var shared: ImagesListServiceProtocol { get }
     var photos: [Photo] { get }
     func fetchPhotosNextPage()
-    func changeLike(photoId: String, isLike: Bool,_ completion: @escaping (Result<Void, Error>) -> Void)
+    func changeLike(photoId: String, isLiked: Bool,_ completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 final class ImagesListService: ImagesListServiceProtocol {
@@ -72,8 +72,8 @@ final class ImagesListService: ImagesListServiceProtocol {
         task.resume()
     }
     
-    func changeLike(photoId: String, isLike: Bool,_ completion: @escaping (Result<Void, Error>) -> Void) {
-        let request = URLRequest.makeHTTPRequest(path: "/photos/\(photoId)/like", httpMethod: isLike ? "DELETE" : "POST")
+    func changeLike(photoId: String, isLiked: Bool,_ completion: @escaping (Result<Void, Error>) -> Void) {
+        let request = URLRequest.makeHTTPRequest(path: "/photos/\(photoId)/like", httpMethod: isLiked ? "DELETE" : "POST")
         
         guard var request = request,
               let token = tokenStorage.bearerToken else {
@@ -92,20 +92,12 @@ final class ImagesListService: ImagesListServiceProtocol {
                 if 200..<300 ~= code {
                     DispatchQueue.main.async {
                         if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
-                            let oldPhoto = self.photos[index]
-                            let newPhoto = Photo(
-                                id: oldPhoto.id,
-                                size: oldPhoto.size,
-                                createdAt: oldPhoto.createdAt,
-                                welcomeDescription: oldPhoto.welcomeDescription,
-                                thumbImageURL: oldPhoto.thumbImageURL,
-                                largeImageURL: oldPhoto.largeImageURL,
-                                isLiked: !oldPhoto.isLiked
-                            )
-                            self.photos[index] = newPhoto
+                            var photo = self.photos[index]
+                            photo.isLiked.toggle()
+                            self.photos[index] = photo
                             completion(.success(Void()))
                         } else {
-                            assertionFailure("Photo not found")
+                            completion(.failure(AppError.photoNotFound(photoId: photoId)))
                         }
                     }
                 } else {

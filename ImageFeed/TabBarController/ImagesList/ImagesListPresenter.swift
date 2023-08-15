@@ -72,7 +72,7 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
     func likeDidTapped(at indexPath: IndexPath) {
         let photo = photos[indexPath.row]
         view?.showProgressHUD()
-        imagesListService.changeLike(photoId: photo.id, isLike: photo.isLiked) { [weak self] result in
+        imagesListService.changeLike(photoId: photo.id, isLiked: photo.isLiked) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(_):

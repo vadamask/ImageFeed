@@ -9,7 +9,7 @@ import UIKit
 
 final class GradientView: UIView {
     
-    var gradientLayer: CAGradientLayer!
+    private var gradientLayer: CAGradientLayer!
     
     init(frame: CGRect, cornerRadius: CGFloat = 0) {
         super.init(frame: frame)

@@ -8,7 +8,7 @@
 import XCTest
 @testable import ImageFeed
 
-class OptionalTests: XCTestCase {
+final class OptionalTests: XCTestCase {
     func testGetNumberFromInt() {
         // given
         let optionalNumber: Int? = 5

@@ -12,8 +12,8 @@ protocol AuthHelperProtocol {
     func code(from url: URL) -> String?
 }
 
-class AuthHelper: AuthHelperProtocol {
-    let configuration: AuthConfiguration
+final class AuthHelper: AuthHelperProtocol {
+    private let configuration: AuthConfiguration
     
     init(configuration: AuthConfiguration = .standard) {
         self.configuration = configuration
@@ -47,7 +47,6 @@ class AuthHelper: AuthHelperProtocol {
             URLQueryItem(name: "response_type", value: "code"),
             URLQueryItem(name: "scope", value: configuration.accessScope)
         ]
-  
         if let urlComponents = urlComponents,
            let url = urlComponents.url {
             return url

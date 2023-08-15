@@ -8,7 +8,7 @@
 import XCTest
 @testable import ImageFeed
 
-class ImagesListTests: XCTestCase {
+final class ImagesListTests: XCTestCase {
     
     func testViewControllerCallsViewDidLoad() {
         // given
@@ -192,7 +192,7 @@ final class ImagesListServiceStub: ImagesListServiceProtocol {
         photos.append(contentsOf: stubPhotos)
         NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
     }
-    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+    func changeLike(photoId: String, isLiked: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
         completion(.success(()))
     }
 }

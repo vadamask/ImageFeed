@@ -105,11 +105,10 @@ final class WebViewPresenterSpy: WebViewPresenterProtocol {
     func code(from url: URL) -> String? {
         return nil
     }
-    func observeWebViewProgress() {}
+    func observeProgressFor(_ webView: WKWebView) {}
 }
 
 final class WebViewViewControllerSpy: WebViewViewControllerProtocol {
-    var webView: WKWebView! = nil
     var loadRequestCalled = false
     var presenter: WebViewPresenterProtocol?
     

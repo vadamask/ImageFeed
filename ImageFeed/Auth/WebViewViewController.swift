@@ -14,7 +14,6 @@ protocol WebViewViewControllerDelegate: AnyObject {
 }
 
 protocol WebViewViewControllerProtocol: AnyObject {
-    var webView: WKWebView! { get }
     var presenter: WebViewPresenterProtocol? { get set }
     func load(_ request: URLRequest)
     func setProgressValue(_ newValue: Float)
@@ -25,7 +24,7 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     var presenter: WebViewPresenterProtocol?
     weak var delegate: WebViewViewControllerDelegate?
     
-    let webView: WKWebView! = {
+    private let webView: WKWebView = {
         let webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.backgroundColor = .ypWhite
@@ -57,7 +56,7 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
         
         webView.navigationDelegate = self
         presenter?.viewDidLoad()
-        presenter?.observeWebViewProgress()
+        presenter?.observeProgressFor(webView)
     }
     
     override func viewWillAppear(_ animated: Bool) {

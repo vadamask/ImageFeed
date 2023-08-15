@@ -6,17 +6,18 @@
 //
 
 import Foundation
+import WebKit
 
 protocol WebViewPresenterProtocol {
     var view: WebViewViewControllerProtocol? { get set }
     func viewDidLoad()
     func code(from url: URL) -> String?
-    func observeWebViewProgress()
+    func observeProgressFor(_ webView: WKWebView)
 }
 
 final class WebViewPresenter: WebViewPresenterProtocol {
-    var authHelper: AuthHelperProtocol
     weak var view: WebViewViewControllerProtocol?
+    private var authHelper: AuthHelperProtocol
     private var estimatedProgressObservation: NSKeyValueObservation?
     
     init(authHelper: AuthHelperProtocol) {
@@ -39,11 +40,10 @@ final class WebViewPresenter: WebViewPresenterProtocol {
         authHelper.code(from: url)
     }
     
-    func observeWebViewProgress() {
-        estimatedProgressObservation = view?.webView.observe(\.estimatedProgress) { [weak self] _, _ in
-            guard let self = self,
-                  let view = view else { return }
-            didUpdateProgressValue(view.webView.estimatedProgress)
+    func observeProgressFor(_ webView: WKWebView) {
+        estimatedProgressObservation = webView.observe(\.estimatedProgress) { [weak self] _, _ in
+            guard let self = self else { return }
+            didUpdateProgressValue(webView.estimatedProgress)
         }
     }
     
