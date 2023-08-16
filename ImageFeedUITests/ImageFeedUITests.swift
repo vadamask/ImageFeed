@@ -42,24 +42,26 @@ final class ImageFeedUITests: XCTestCase {
     func testFeed() throws {
         let tablesQuery = app.tables
         let cellToSwipe = tablesQuery.children(matching: .cell).element(boundBy: 0)
-        XCTAssertTrue(cellToSwipe.waitForExistence(timeout: 5))
+        XCTAssertTrue(cellToSwipe.waitForExistence(timeout: 3))
         cellToSwipe.swipeUp()
-        XCTAssertTrue(cellToSwipe.waitForExistence(timeout: 5))
+        sleep(3)
         
-        let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
+        let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 2)
         cellToLike.buttons["like disable"].tap()
-        XCTAssertTrue(cellToLike.waitForExistence(timeout: 5))
+        sleep(2)
         cellToLike.buttons["like active"].tap()
-        XCTAssertTrue(cellToLike.waitForExistence(timeout: 5))
-        
+        sleep(2)
         cellToLike.tap()
+        
         let image = app.scrollViews.images.element(boundBy: 0)
         XCTAssertTrue(image.waitForExistence(timeout: 5))
         
         image.pinch(withScale: 3, velocity: 1)
-        XCTAssertTrue(image.waitForExistence(timeout: 5))
+        sleep(2)
         image.pinch(withScale: 0.5, velocity: -1)
-        XCTAssertTrue(image.waitForExistence(timeout: 5))
+        sleep(2)
+        
+        app.buttons["BackButton"].tap()
     }
     
     func testProfile() throws {

@@ -111,7 +111,10 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        presenter?.cellWillDisplay(at: indexPath)
+        if let visibleIndexPaths = tableView.indexPathsForVisibleRows,
+           visibleIndexPaths.contains(indexPath) {
+            presenter?.cellWillDisplay(at: indexPath)
+        }
     }
 }
 
