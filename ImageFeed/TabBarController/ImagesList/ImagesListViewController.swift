@@ -14,6 +14,7 @@ protocol ImagesListViewControllerProtocol: AnyObject {
     func reloadRows(at indexPaths: [IndexPath])
     func showProgressHUD()
     func dismissProgressHUD()
+    func dismissAlert()
 }
 
 final class ImagesListViewController: UIViewController & ImagesListViewControllerProtocol {
@@ -66,6 +67,10 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
     
     func dismissProgressHUD() {
         UIBlockingProgressHUD.dismiss()
+    }
+    
+    func dismissAlert() {
+        dismiss(animated: true)
     }
 
     private func setupViews() {

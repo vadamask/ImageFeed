@@ -31,7 +31,10 @@ final class OAuth2Service {
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
             guard let self = self else { return }
-            defer { self.task = nil }
+            defer {
+                self.task = nil
+                self.isLoading = false
+            }
             
             switch result {
             case .success(let tokenResponseBody):
@@ -40,7 +43,6 @@ final class OAuth2Service {
                 self.lastCode = nil
                 completion(.failure(error))
             }
-            self.isLoading = false
         }
         self.task = task
         task.resume()

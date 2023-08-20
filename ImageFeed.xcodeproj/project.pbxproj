@@ -39,6 +39,8 @@
 		DD8744A62A8C0F96002606E3 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8744A52A8C0F96002606E3 /* AppError.swift */; };
 		DD8F10EB2A82B816002D4846 /* OptionalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8F10EA2A82B816002D4846 /* OptionalTests.swift */; };
 		DD8F10ED2A82B9EE002D4846 /* URLRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8F10EC2A82B9EE002D4846 /* URLRequestTests.swift */; };
+		DD9668642A9247AA0083F411 /* AlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9668632A9247AA0083F411 /* AlertPresenter.swift */; };
+		DD9668662A924A850083F411 /* AlertModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9668652A924A850083F411 /* AlertModel.swift */; };
 		DDA239A92A44AC28005A69E5 /* AuthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA239A82A44AC28005A69E5 /* AuthConfiguration.swift */; };
 		DDA239AC2A44B2F4005A69E5 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA239AB2A44B2F3005A69E5 /* AuthViewController.swift */; };
 		DDA239AE2A44D4E2005A69E5 /* WebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA239AD2A44D4E2005A69E5 /* WebViewViewController.swift */; };
@@ -104,6 +106,8 @@
 		DD8744A52A8C0F96002606E3 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		DD8F10EA2A82B816002D4846 /* OptionalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalTests.swift; sourceTree = "<group>"; };
 		DD8F10EC2A82B9EE002D4846 /* URLRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequestTests.swift; sourceTree = "<group>"; };
+		DD9668632A9247AA0083F411 /* AlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenter.swift; sourceTree = "<group>"; };
+		DD9668652A924A850083F411 /* AlertModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertModel.swift; sourceTree = "<group>"; };
 		DDA239A82A44AC28005A69E5 /* AuthConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfiguration.swift; sourceTree = "<group>"; };
 		DDA239AB2A44B2F3005A69E5 /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		DDA239AD2A44D4E2005A69E5 /* WebViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewViewController.swift; sourceTree = "<group>"; };
@@ -266,6 +270,15 @@
 			path = Animations;
 			sourceTree = "<group>";
 		};
+		DD9668622A9247980083F411 /* AlertPresenter */ = {
+			isa = PBXGroup;
+			children = (
+				DD9668632A9247AA0083F411 /* AlertPresenter.swift */,
+				DD9668652A924A850083F411 /* AlertModel.swift */,
+			);
+			path = AlertPresenter;
+			sourceTree = "<group>";
+		};
 		DDAEF74B2A8414910097B83E /* ImageFeedUITests */ = {
 			isa = PBXGroup;
 			children = (
@@ -329,6 +342,7 @@
 			isa = PBXGroup;
 			children = (
 				DD6AAC912A59797D0084D92F /* UIBlockingProgressHUD.swift */,
+				DD9668622A9247980083F411 /* AlertPresenter */,
 				DD6CB7372A86B9FD00D3F9E7 /* Animations */,
 				DD049C1F2A213D9F00F2A8D3 /* Extensions */,
 			);
@@ -498,6 +512,7 @@
 				DD6AACA62A5C77B30084D92F /* URLSession+Extensions.swift in Sources */,
 				DDA239AE2A44D4E2005A69E5 /* WebViewViewController.swift in Sources */,
 				DD6AAC982A5985D70084D92F /* ProfileService.swift in Sources */,
+				DD9668662A924A850083F411 /* AlertModel.swift in Sources */,
 				DDB712432A6D81F2004120F6 /* Photo.swift in Sources */,
 				DD8107352A470C5700FD870C /* OAuth2Service.swift in Sources */,
 				DD0FE2252A69C47200D59F27 /* ImagesListService.swift in Sources */,
@@ -518,6 +533,7 @@
 				DD146C5B2A7E798B00069136 /* ProfileViewModel.swift in Sources */,
 				DDB7123F2A6D8162004120F6 /* OAuthTokenResponseBody.swift in Sources */,
 				DD81073A2A4820E200FD870C /* SplashViewController.swift in Sources */,
+				DD9668642A9247AA0083F411 /* AlertPresenter.swift in Sources */,
 				DD049C0E2A2138CD00F2A8D3 /* SceneDelegate.swift in Sources */,
 				DD049C212A213DD800F2A8D3 /* UIColor+Extensions.swift in Sources */,
 				DD6AAC9A2A598FD80084D92F /* URLRequest+Extensions.swift in Sources */,

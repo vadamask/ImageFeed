@@ -41,20 +41,6 @@ final class ProfileViewTests: XCTestCase {
         XCTAssertEqual(viewController.model?.description, "ios developer")
     }
     
-    func testPresenterCallsShowAlert() {
-        // given
-        let viewController = ProfileViewControllerSpy()
-        let presenter = ProfileViewPresenter(profileService: ProfileServiceStub(), profileImageService: ProfileImageServiceStub())
-        viewController.presenter = presenter
-        presenter.view = viewController
-       
-        // when
-        presenter.didTapLogoutButton()
-        
-        // then
-        XCTAssertTrue(viewController.showAlertControllerCalled)
-    }
-    
     func testPresenterCallsSetAvatar() {
         // given
         let viewController = ProfileViewControllerSpy()
@@ -88,7 +74,6 @@ final class ProfileViewPresenterSpy: ProfileViewPresenterProtocol {
 
 final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
     var presenter: ProfileViewPresenterProtocol?
-    var showAlertControllerCalled = false
     var setAvatarCalled = false
     var updateProfileDetailsCalled = false
     var url: URL?
@@ -98,13 +83,11 @@ final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
         updateProfileDetailsCalled = true
         self.model = model
     }
-    func showAlertController(_ alertController: UIAlertController) {
-        showAlertControllerCalled = true
-    }
     func setAvatar(_ url: URL) {
         setAvatarCalled = true
         self.url = url
     }
+    func dismissAlert() {}
 }
 
 final class ProfileServiceStub: ProfileServiceProtocol {

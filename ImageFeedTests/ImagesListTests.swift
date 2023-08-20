@@ -174,6 +174,7 @@ final class ImagesListViewControllerSpy: ImagesListViewControllerProtocol {
     func dismissProgressHUD() {
         dismissProgressHUDCalled = true
     }
+    func dismissAlert() {}
 }
 
 final class ImagesListServiceStub: ImagesListServiceProtocol {
@@ -188,7 +189,7 @@ final class ImagesListServiceStub: ImagesListServiceProtocol {
                   largeImageURL: "largeURL", isLiked: false)
         ), count: 10)
     
-    func fetchPhotosNextPage() {
+    func fetchPhotosNextPage(completion: @escaping (Result<Void, Error>) -> Void) {
         photos.append(contentsOf: stubPhotos)
         NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
     }

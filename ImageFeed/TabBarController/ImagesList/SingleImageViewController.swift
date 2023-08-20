@@ -11,6 +11,7 @@ import Kingfisher
 final class SingleImageViewController: UIViewController {
     
     var photo: Photo!
+    private let alertPresenter = AlertPresenter()
     
     private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -53,6 +54,7 @@ final class SingleImageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         scrollView.delegate = self
+        alertPresenter.delegate = self
         loadPhoto()
     }
     
@@ -70,24 +72,21 @@ final class SingleImageViewController: UIViewController {
             case .success(let value):
                 rescaleAndCenterImageInScrollView(image: value.image)
             case .failure(let error):
-                showError(error)
+                print(error.localizedDescription)
+                showAlert()
             }
             UIBlockingProgressHUD.dismiss()
         }
     }
     
-    private func showError(_ error: Error) {
-        let alertController = UIAlertController(title: "Что-то пошло не так", message: "Попробовать езще раз?", preferredStyle: .alert)
-        let yesAction = UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            loadPhoto()
-        }
-        let noAction = UIAlertAction(title: "Не надо", style: .default) { _ in
-            alertController.dismiss(animated: true)
-        }
-        alertController.addAction(yesAction)
-        alertController.addAction(noAction)
-        self.present(alertController, animated: true)
+    private func showAlert() {
+        let model = AlertModel(
+            title: "Потеряно соединение",
+            message: "Проверьте подключение к интернету и попробуйте еще раз",
+            agreeButtonTitle: "Повторить",
+            disagreeButtonTitle: "Отмена"
+        )
+        alertPresenter.showAlert(with: model, on: self)
     }
     
     private func setupConstraints() {
@@ -173,5 +172,17 @@ extension SingleImageViewController: UIScrollViewDelegate {
     }
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         recenterImage()
+    }
+}
+
+// MARK: - AlertPresenterDelegate
+
+extension SingleImageViewController: AlertPresenterDelegate {
+    func agreeAction() {
+        loadPhoto()
+    }
+    
+    func disagreeAction() {
+        dismiss(animated: true)
     }
 }

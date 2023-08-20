@@ -11,6 +11,7 @@ enum NetworkError: Error {
     case httpStatusCode(Int)
     case urlSessionError(Error)
     case decodeError(Error)
+    case unknownError
 }
 
 extension NetworkError: LocalizedError {
@@ -22,9 +23,8 @@ extension NetworkError: LocalizedError {
             return NSLocalizedString("Failed with session - \(error)", comment: "Network error")
         case .decodeError(let error):
             return NSLocalizedString("Failed with decode model - \(error)", comment: "Network error")
-        @unknown default:
-            return NSLocalizedString("Unknown error", comment: "Unknown")
+        case .unknownError:
+            return NSLocalizedString("Unknown error", comment: "URL Session error")
         }
     }
 }
-

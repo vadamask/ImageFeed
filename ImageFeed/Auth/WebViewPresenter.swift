@@ -17,18 +17,20 @@ protocol WebViewPresenterProtocol {
 
 final class WebViewPresenter: WebViewPresenterProtocol {
     weak var view: WebViewViewControllerProtocol?
-    private var authHelper: AuthHelperProtocol
+    private let authHelper: AuthHelperProtocol
     private var estimatedProgressObservation: NSKeyValueObservation?
+    private let alertPresenter = AlertPresenter()
     
     init(authHelper: AuthHelperProtocol) {
         self.authHelper = authHelper
     }
     
     func viewDidLoad() {
+        alertPresenter.delegate = self
         if let request = authHelper.authRequest() {
             view?.load(request)
         } else {
-            assertionFailure("Failed with making request")
+            showAlert()
         }
     }
     
@@ -47,11 +49,39 @@ final class WebViewPresenter: WebViewPresenterProtocol {
         }
     }
     
+    static func cleanCookies() {
+        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
+        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
+            records.forEach { record in
+                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
+            }
+        }
+    }
+    
+    private func showAlert() {
+        let model = AlertModel(
+            title: "Что-то пошло не так",
+            message: "Проверьте подключение к интернету и попробуйте еще раз",
+            agreeButtonTitle: "Ок"
+        )
+        if let view = view as? WebViewViewController {
+            alertPresenter.showAlert(with: model, on: view)
+        }
+    }
+    
     private func didUpdateProgressValue(_ newValue: Double) {
         let newProgressValue = Float(newValue)
         view?.setProgressValue(newProgressValue)
         
         let shouldHideProgress = shouldHideProgress(for: newProgressValue)
         view?.setProgressHidden(shouldHideProgress)
+    }
+}
+
+// MARK: - AlertPresenterDelegate
+
+extension WebViewPresenter: AlertPresenterDelegate {
+    func agreeAction() {
+        view?.dismissAlert()
     }
 }

@@ -20,6 +20,7 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
     weak var view: ProfileViewControllerProtocol?
     private let profileService: ProfileServiceProtocol
     private let profileImageService: ProfileImageServiceProtocol
+    private let alertPresenter = AlertPresenter()
     
     init(profileService: ProfileServiceProtocol = ProfileService.shared,
          profileImageService: ProfileImageServiceProtocol = ProfileImageService.shared) {
@@ -29,6 +30,7 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
     
     func viewDidLoad() {
         fetchProfile()
+        alertPresenter.delegate = self
     }
     
     func viewWillAppear() {
@@ -40,19 +42,15 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
     }
     
     func didTapLogoutButton() {
-        let alertController = UIAlertController(title: "Пока, пока!", message: "Уверены, что хотите выйти?", preferredStyle: .alert)
-        let yesAction = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            self.cleanAndSwitchToSplashVC()
+        let model = AlertModel(
+            title: "Пока, пока!",
+            message: "Уверены, что хотите выйти?",
+            agreeButtonTitle: "Да",
+            disagreeButtonTitle: "Нет"
+        )
+        if let view = view as? ProfileViewController {
+            alertPresenter.showAlert(with: model, on: view)
         }
-        yesAction.accessibilityIdentifier = "Ok"
-        let noAction = UIAlertAction(title: "Нет", style: .default) { _ in
-            alertController.dismiss(animated: true)
-        }
-        alertController.addAction(yesAction)
-        alertController.addAction(noAction)
-        alertController.view.accessibilityIdentifier = "Alert"
-        view?.showAlertController(alertController)
     }
     
     private func fetchProfile() {
@@ -105,19 +103,22 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
     }
     
     private func cleanAndSwitchToSplashVC() {
-        cleanCookies()
+        WebViewPresenter.cleanCookies()
         OAuth2TokenStorage.shared.removeToken()
         let window = UIApplication.shared.windows.first
         let splashVC = SplashViewController()
         window?.rootViewController = splashVC
     }
-    
-    private func cleanCookies() {
-        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
-        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
-            records.forEach { record in
-                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
-            }
-        }
+}
+
+// MARK: - AlertPresenterDelegate
+
+extension ProfileViewPresenter: AlertPresenterDelegate {
+    func agreeAction() {
+        cleanAndSwitchToSplashVC()
+    }
+    func disagreeAction() {
+        view?.dismissAlert()
     }
 }
+

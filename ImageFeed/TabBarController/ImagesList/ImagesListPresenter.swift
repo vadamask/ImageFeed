@@ -23,6 +23,7 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
     private var photos: [Photo] = []
     private let imagesListService: ImagesListServiceProtocol
     private var imagesListServiceObserver: NSObjectProtocol?
+    private let alertPresenter = AlertPresenter()
     
     init(imagesListService: ImagesListServiceProtocol = ImagesListService.shared) {
         self.imagesListService = imagesListService
@@ -31,6 +32,7 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
     func viewDidLoad() {
         addObserver()
         fetchPhotosNextPage()
+        alertPresenter.delegate = self
     }
     
     func numberOfRowsInSection() -> Int {
@@ -65,7 +67,7 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
     
     func cellWillDisplay(at indexPath: IndexPath) {
         if indexPath.row == photos.count - 1 {
-            imagesListService.fetchPhotosNextPage()
+            fetchPhotosNextPage()
         }
     }
     
@@ -80,8 +82,20 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
                 view?.reloadRows(at: [indexPath])
             case .failure(let error):
                 print(error.localizedDescription)
+                showAlert()
             }
             view?.dismissProgressHUD()
+        }
+    }
+    
+    private func showAlert() {
+        let model = AlertModel(
+            title: "Потеряно соединение",
+            message: "Проверьте подключение к интернету и попробуйте еще раз",
+            agreeButtonTitle: "Ок"
+        )
+        if let view = view as? ImagesListViewController {
+            alertPresenter.showAlert(with: model, on: view)
         }
     }
     
@@ -98,7 +112,17 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
     }
     
     private func fetchPhotosNextPage() {
-        imagesListService.fetchPhotosNextPage()
+        imagesListService.fetchPhotosNextPage { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(_):
+                print("Success downloading photos")
+            case .failure(let error):
+                print(error.localizedDescription)
+                showAlert()
+            }
+            
+        }
     }
     
     private func calculateIndexPaths() {
@@ -110,5 +134,13 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
             IndexPath(row: $0, section: 0)
         }
         view?.updateTableViewAnimated(at: indexPaths)
+    }
+}
+
+// MARK: - AlertPresenterDelegate
+
+extension ImagesListPresenter: AlertPresenterDelegate {
+    func agreeAction() {
+        view?.dismissAlert()
     }
 }

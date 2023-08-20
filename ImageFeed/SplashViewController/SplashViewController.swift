@@ -18,9 +18,15 @@ final class SplashViewController: UIViewController {
     
     private let networkService = OAuth2Service.shared
     private let tokenStorage = OAuth2TokenStorage.shared
+    private let alertPresenter = AlertPresenter()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        alertPresenter.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -69,19 +75,13 @@ final class SplashViewController: UIViewController {
         window?.rootViewController = tabBarController
     }
     
-    private func showAlert(with error: Error) {
-        let message = "Не удалось войти в систему\n" + error.localizedDescription
-        let alertController = UIAlertController(
+    private func showAlert() {
+        let model = AlertModel(
             title: "Что-то пошло не так",
-            message: message,
-            preferredStyle: .alert
+            message: "Не удалось войти в систему\nпроверьте сетевое подключение",
+            agreeButtonTitle: "Ок"
         )
-        let action = UIAlertAction(title: "Ок", style: .cancel) { [weak self] _ in
-            guard let self = self else { return }
-            switchToAuthViewController()
-        }
-        alertController.addAction(action)
-        present(alertController, animated: true)
+        alertPresenter.showAlert(with: model, on: self)
     }
 }
 
@@ -105,10 +105,20 @@ extension SplashViewController: AuthViewControllerDelegate {
                 UIBlockingProgressHUD.dismiss()
                 switchToTabBarController()
             case .failure(let error):
+                print(error.localizedDescription)
                 UIBlockingProgressHUD.dismiss()
-                showAlert(with: error)
+                showAlert()
             }
         }
+    }
+}
+
+// MARK: - AlertPresenterDelegate
+
+extension SplashViewController: AlertPresenterDelegate {
+    func agreeAction() {
+        WebViewPresenter.cleanCookies()
+        switchToAuthViewController()
     }
 }
 

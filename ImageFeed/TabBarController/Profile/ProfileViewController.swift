@@ -10,9 +10,9 @@ import Kingfisher
 
 protocol ProfileViewControllerProtocol: AnyObject {
     var presenter: ProfileViewPresenterProtocol? { get set }
-    func showAlertController(_ alertController: UIAlertController)
     func setAvatar(_ url: URL)
     func updateProfileDetails(with model: ProfileViewModel)
+    func dismissAlert()
 }
 
 final class ProfileViewController: UIViewController & ProfileViewControllerProtocol {
@@ -86,10 +86,6 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         .lightContent
     }
     
-    func showAlertController(_ alertController: UIAlertController) {
-        present(alertController, animated: true)
-    }
-    
     func setAvatar(_ url: URL) {
         let cache = ImageCache.default
         cache.clearDiskCache()
@@ -111,6 +107,10 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         userNameLabel.text = model.userName
         descriptionLabel.text = model.description
         removeLabelAnimations()
+    }
+    
+    func dismissAlert() {
+        dismiss(animated: true)
     }
     
     @objc private func logoutButtonPressed() {
@@ -181,6 +181,4 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
             view.removeFromSuperview()
         }
     }
-    
-    
 }

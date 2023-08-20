@@ -10,7 +10,7 @@ import Foundation
 protocol ImagesListServiceProtocol {
     static var shared: ImagesListServiceProtocol { get }
     var photos: [Photo] { get }
-    func fetchPhotosNextPage()
+    func fetchPhotosNextPage(completion: @escaping (Result<Void, Error>) -> Void)
     func changeLike(photoId: String, isLiked: Bool,_ completion: @escaping (Result<Void, Error>) -> Void)
 }
 
@@ -29,7 +29,7 @@ final class ImagesListService: ImagesListServiceProtocol {
     static let shared: ImagesListServiceProtocol = ImagesListService()
     static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
     
-    func fetchPhotosNextPage() {
+    func fetchPhotosNextPage(completion: @escaping (Result<Void, Error>) -> Void) {
         assert(Thread.isMainThread)
         guard task == nil else { return }
         
@@ -62,9 +62,10 @@ final class ImagesListService: ImagesListServiceProtocol {
                 DispatchQueue.main.async {
                     self.photos.append(contentsOf: mapPhotos)
                     NotificationCenter.default.post(name: Self.didChangeNotification, object: self)
+                    completion(.success(Void()))
                 }
             case .failure(let error):
-                print(error.localizedDescription)
+                completion(.failure(error))
             }
         }
         self.task = task
@@ -110,7 +111,7 @@ final class ImagesListService: ImagesListServiceProtocol {
                     completion(.failure(NetworkError.urlSessionError(error)))
                 }
             } else {
-                assertionFailure("Unknown error")
+                completion(.failure(NetworkError.unknownError))
             }
         }
         task.resume()
