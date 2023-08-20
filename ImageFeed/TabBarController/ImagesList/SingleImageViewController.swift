@@ -10,6 +10,9 @@ import Kingfisher
 
 final class SingleImageViewController: UIViewController {
     
+    var photo: Photo!
+    private let alertPresenter = AlertPresenter()
+    
     private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -31,6 +34,7 @@ final class SingleImageViewController: UIViewController {
         button.setImage(UIImage(named: "button_backward"), for: .normal)
         button.setTitle("", for: .normal)
         button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
+        button.accessibilityIdentifier = "BackButton"
         return button
     }()
     
@@ -43,18 +47,20 @@ final class SingleImageViewController: UIViewController {
         return button
     }()
     
-    var photo: Photo!
-    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = .ypBlack
-        setupScrollView()
+        scrollView.delegate = self
+        alertPresenter.delegate = self
         loadPhoto()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupViews()
         setupConstraints()
     }
     
@@ -66,32 +72,24 @@ final class SingleImageViewController: UIViewController {
             case .success(let value):
                 rescaleAndCenterImageInScrollView(image: value.image)
             case .failure(let error):
-                showError(error)
+                print(error.localizedDescription)
+                showAlert()
             }
             UIBlockingProgressHUD.dismiss()
         }
     }
     
-    private func showError(_ error: Error) {
-        let alertController = UIAlertController(title: "Что-то пошло не так", message: "Попробовать езще раз?", preferredStyle: .alert)
-        let yesAction = UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            loadPhoto()
-        }
-        let noAction = UIAlertAction(title: "Не надо", style: .default) { _ in
-            alertController.dismiss(animated: true)
-        }
-        alertController.addAction(yesAction)
-        alertController.addAction(noAction)
-        self.present(alertController, animated: true)
+    private func showAlert() {
+        let model = AlertModel(
+            title: "Потеряно соединение",
+            message: "Проверьте подключение к интернету и попробуйте еще раз",
+            agreeButtonTitle: "Повторить",
+            disagreeButtonTitle: "Отмена"
+        )
+        alertPresenter.showAlert(with: model, on: self)
     }
     
     private func setupConstraints() {
-        view.addSubview(scrollView)
-        scrollView.addSubview(imageView)
-        view.addSubview(backButton)
-        view.addSubview(shareButton)
-        
         NSLayoutConstraint.activate([
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
@@ -108,11 +106,15 @@ final class SingleImageViewController: UIViewController {
             shareButton.widthAnchor.constraint(equalToConstant: 50),
             shareButton.heightAnchor.constraint(equalToConstant: 50)
         ])
-        
     }
     
-    private func setupScrollView() {
-        scrollView.delegate = self
+    private func setupViews() {
+        view.addSubview(scrollView)
+        scrollView.addSubview(imageView)
+        view.addSubview(backButton)
+        view.addSubview(shareButton)
+        
+        view.backgroundColor = .ypBlack
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.2
         scrollView.showsVerticalScrollIndicator = false
@@ -129,7 +131,7 @@ final class SingleImageViewController: UIViewController {
         let wScale = visibleRectSize.width / imageSize.width
         let scale = min(maxZoomScale, max(minZoomScale, max(hScale, wScale)))
         scrollView.setZoomScale(scale, animated: false)
-        scrollView.layoutIfNeeded() // заставляем пересчитать принудительно
+        scrollView.layoutIfNeeded()
         let newContentSize = scrollView.contentSize
         let x = (newContentSize.width - visibleRectSize.width) / 2
         let y = (newContentSize.height - visibleRectSize.height) / 2
@@ -147,6 +149,19 @@ final class SingleImageViewController: UIViewController {
         )
         present(activityVC, animated: true)
     }
+    
+    private func recenterImage() {
+        let imageViewSize = imageView.frame.size
+        let scrollViewSize = scrollView.bounds.size
+        
+        let horizontalSpace = imageViewSize.width < scrollViewSize.width ?
+        (scrollViewSize.width - imageViewSize.width) / 2 : 0
+        
+        let verticalSpace = imageViewSize.height < scrollViewSize.height ?
+        (scrollViewSize.height - imageViewSize.height) / 2 : 0
+        
+        scrollView.contentInset = UIEdgeInsets(top: verticalSpace, left: horizontalSpace, bottom: verticalSpace, right: horizontalSpace)
+    }
 }
 
 // MARK: - UIScrollViewDelegate
@@ -154,5 +169,20 @@ final class SingleImageViewController: UIViewController {
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         imageView
+    }
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        recenterImage()
+    }
+}
+
+// MARK: - AlertPresenterDelegate
+
+extension SingleImageViewController: AlertPresenterDelegate {
+    func agreeAction() {
+        loadPhoto()
+    }
+    
+    func disagreeAction() {
+        dismiss(animated: true)
     }
 }

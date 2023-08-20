@@ -13,6 +13,8 @@ protocol AuthViewControllerDelegate: AnyObject {
 
 final class AuthViewController: UIViewController {
     
+    weak var delegate: AuthViewControllerDelegate?
+    
     private let logoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -29,34 +31,37 @@ final class AuthViewController: UIViewController {
         button.setTitleColor(.ypBlack, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        button.accessibilityIdentifier = "Authenticate"
         return button
     }()
-    
-    weak var delegate: AuthViewControllerDelegate?
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        view.backgroundColor = .ypBlack
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupViews()
         setupConstraints()
     }
     
-    @objc
-    private func buttonTapped() {
-        let webViewVC = WebViewViewController()
-        webViewVC.delegate = self
-        webViewVC.modalPresentationStyle = .fullScreen
-        present(webViewVC, animated: true)
+    @objc private func buttonTapped() {
+        let webView = WebViewViewController()
+        let presenter = WebViewPresenter(authHelper: AuthHelper())
+        webView.presenter = presenter
+        presenter.view = webView
+        webView.delegate = self
+        webView.modalPresentationStyle = .fullScreen
+        present(webView, animated: true)
+    }
+    
+    private func setupViews() {
+        view.backgroundColor = .ypBlack
+        view.addSubview(logoImageView)
+        view.addSubview(button)
     }
     
     private func setupConstraints() {
-        view.addSubview(logoImageView)
-        view.addSubview(button)
-        
         NSLayoutConstraint.activate([
             logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logoImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),

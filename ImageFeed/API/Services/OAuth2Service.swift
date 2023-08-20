@@ -12,6 +12,7 @@ final class OAuth2Service {
     static let shared = OAuth2Service()
     var isLoading = false
     
+    private let configuration = AuthConfiguration.standard
     private let urlSession = URLSession.shared
     private var lastCode: String?
     private var task: URLSessionTask?
@@ -30,7 +31,10 @@ final class OAuth2Service {
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
             guard let self = self else { return }
-            self.task = nil
+            defer {
+                self.task = nil
+                self.isLoading = false
+            }
             
             switch result {
             case .success(let tokenResponseBody):
@@ -39,23 +43,21 @@ final class OAuth2Service {
                 self.lastCode = nil
                 completion(.failure(error))
             }
-            self.isLoading = false
         }
         self.task = task
         task.resume()
     }
     
     private func makeRequest(with code: String) -> URLRequest? {
-        
-        guard var urlComponents = URLComponents(string: Constants.accessTokenURL) else {
-            assertionFailure("Failed to make URLComponents from \(Constants.accessTokenURL)")
+        guard var urlComponents = URLComponents(string: configuration.accessTokenURL) else {
+            assertionFailure("Failed to make URLComponents from \(configuration.accessTokenURL)")
             return nil
         }
         
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),
-            URLQueryItem(name: "client_secret", value: Constants.secretKey),
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
+            URLQueryItem(name: "client_id", value: configuration.accessKey),
+            URLQueryItem(name: "client_secret", value: configuration.secretKey),
+            URLQueryItem(name: "redirect_uri", value: configuration.redirectURI),
             URLQueryItem(name: "code", value: code),
             URLQueryItem(name: "grant_type", value: "authorization_code")
         ]
