@@ -85,8 +85,8 @@ final class ImagesListTests: XCTestCase {
         let model = presenter.modelForCell(at: IndexPath(row: 0, section: 0))
         
         // then
-        XCTAssertEqual(model.imageURL, "thumbURL")
-        XCTAssertEqual(model.imageIsLiked, false)
+        XCTAssertEqual(model.imageURL, "regularURL")
+        XCTAssertEqual(model.isLiked, false)
         XCTAssertEqual(model.date, nil)
     }
     
@@ -141,7 +141,7 @@ final class ImagesListPresenterSpy: ImagesListPresenterProtocol {
         viewDidLoadCalled = true
     }
     func modelForCell(at indexPath: IndexPath) -> ImagesListCellModel {
-        ImagesListCellModel(imageURL: "example.com", imageIsLiked: true, date: Date())
+        ImagesListCellModel(imageURL: "example.com", isLiked: true, date: Date())
     }
     func numberOfRowsInSection() -> Int { 0 }
     func heightForRow(at indexPath: IndexPath, with tableViewWidth: CGFloat) -> CGFloat { 0 }
@@ -179,14 +179,15 @@ final class ImagesListViewControllerSpy: ImagesListViewControllerProtocol {
 
 final class ImagesListServiceStub: ImagesListServiceProtocol {
     static var shared: ImagesListServiceProtocol = ImagesListServiceStub()
-    var photos: [Photo] = []
+    var photos: [Image] = []
     let stubPhotos = Array(
         repeating: (
-            Photo(id: "1",
+            Image(id: "1",
                   size: CGSize(width: 400, height: 400),
                   createdAt: nil, welcomeDescription: nil,
-                  thumbImageURL: "thumbURL",
-                  largeImageURL: "largeURL", isLiked: false)
+                  thumbURL: "thumbURL",
+                  regularURL: "regularURL",
+                  largeURL: "largeURL", isLiked: false)
         ), count: 10)
     
     func fetchPhotosNextPage(completion: @escaping (Result<Int, Error>) -> Void) {

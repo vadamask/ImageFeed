@@ -10,7 +10,7 @@ import Kingfisher
 
 final class SingleImageViewController: UIViewController {
     
-    var photo: Photo!
+    var photo: Image!
     private let alertPresenter = AlertPresenter()
     
     private var scrollView: UIScrollView = {
@@ -66,7 +66,7 @@ final class SingleImageViewController: UIViewController {
     
     private func loadPhoto() {
         UIBlockingProgressHUD.show()
-        imageView.kf.setImage(with: URL(string: photo.largeImageURL)) { [weak self] result in
+        imageView.kf.setImage(with: URL(string: photo.largeURL)) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let value):

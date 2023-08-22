@@ -9,6 +9,6 @@ import Foundation
 
 struct ImagesListCellModel {
     let imageURL: String
-    let imageIsLiked: Bool
+    let isLiked: Bool
     let date: Date?
 }

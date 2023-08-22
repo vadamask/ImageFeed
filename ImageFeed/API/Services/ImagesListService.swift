@@ -9,7 +9,7 @@ import Foundation
 
 protocol ImagesListServiceProtocol {
     static var shared: ImagesListServiceProtocol { get }
-    var photos: [Photo] { get }
+    var photos: [Image] { get }
     func fetchPhotosNextPage(completion: @escaping (Result<Int, Error>) -> Void)
     func changeLike(photoId: String, isLiked: Bool,_ completion: @escaping (Result<Void, Error>) -> Void)
 }
@@ -21,7 +21,7 @@ final class ImagesListService: ImagesListServiceProtocol {
     }()
     
     private init(){}
-    private (set) var photos: [Photo] = []
+    private (set) var photos: [Image] = []
     private var lastLoadedPage: Int?
     private var task: URLSessionTask?
     private let tokenStorage = OAuth2TokenStorage.shared
@@ -43,19 +43,20 @@ final class ImagesListService: ImagesListServiceProtocol {
         
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
-        let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
+        let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<[ImageResult], Error>) in
             guard let self = self else { return }
             defer { self.task = nil }
             
             switch result{
             case .success(let photosData):
                 let mapPhotos = photosData.map {
-                    Photo(id: $0.id,
+                    Image(id: $0.id,
                           size: CGSize(width: $0.width, height: $0.height),
                           createdAt: self.dateFormatter.date(from: $0.createdAt),
                           welcomeDescription: $0.description,
-                          thumbImageURL: $0.urls.thumb,
-                          largeImageURL: $0.urls.full,
+                          thumbURL: $0.urls.thumb,
+                          regularURL: $0.urls.regular,
+                          largeURL: $0.urls.full,
                           isLiked: $0.likedByUser
                     )
                 }

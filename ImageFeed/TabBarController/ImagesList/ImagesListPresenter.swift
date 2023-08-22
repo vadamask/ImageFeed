@@ -20,7 +20,7 @@ protocol ImagesListPresenterProtocol {
 
 final class ImagesListPresenter: ImagesListPresenterProtocol {
     weak var view: ImagesListViewControllerProtocol?
-    private var photos: [Photo] = []
+    private var photos: [Image] = []
     private let imagesListService: ImagesListServiceProtocol
     private var imagesListServiceObserver: NSObjectProtocol?
     private let alertPresenter = AlertPresenter()
@@ -51,8 +51,8 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
     
     func modelForCell(at indexPath: IndexPath) -> ImagesListCellModel {
         ImagesListCellModel(
-            imageURL: photos[indexPath.row].thumbImageURL,
-            imageIsLiked: photos[indexPath.row].isLiked,
+            imageURL: photos[indexPath.row].regularURL,
+            isLiked: photos[indexPath.row].isLiked,
             date: photos[indexPath.row].createdAt
         )
     }

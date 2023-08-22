@@ -7,12 +7,13 @@
 
 import Foundation
 
-struct Photo {
+struct Image {
     let id: String
     let size: CGSize
     let createdAt: Date?
     let welcomeDescription: String?
-    let thumbImageURL: String
-    let largeImageURL: String
+    let thumbURL: String
+    let regularURL: String
+    let largeURL: String
     var isLiked: Bool
 }
