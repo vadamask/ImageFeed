@@ -115,13 +115,12 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
         imagesListService.fetchPhotosNextPage { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .success(_):
-                print("Success downloading photos")
+            case .success(let page):
+                print("Success downloading photos on page - \(page)")
             case .failure(let error):
                 print(error.localizedDescription)
                 showAlert()
             }
-            
         }
     }
     

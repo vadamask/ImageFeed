@@ -189,7 +189,7 @@ final class ImagesListServiceStub: ImagesListServiceProtocol {
                   largeImageURL: "largeURL", isLiked: false)
         ), count: 10)
     
-    func fetchPhotosNextPage(completion: @escaping (Result<Void, Error>) -> Void) {
+    func fetchPhotosNextPage(completion: @escaping (Result<Int, Error>) -> Void) {
         photos.append(contentsOf: stubPhotos)
         NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
     }

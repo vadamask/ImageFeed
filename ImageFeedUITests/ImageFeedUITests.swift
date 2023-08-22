@@ -46,7 +46,7 @@ final class ImageFeedUITests: XCTestCase {
         cellToSwipe.swipeUp()
         sleep(3)
         
-        let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 2)
+        let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
         cellToLike.buttons["like disable"].tap()
         sleep(2)
         cellToLike.buttons["like active"].tap()
