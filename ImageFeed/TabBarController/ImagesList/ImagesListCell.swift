@@ -96,6 +96,20 @@ final class ImagesListCell: UITableViewCell {
             assertionFailure("index path is nil")
             return
         }
+        UIView.animateKeyframes(withDuration: 1, delay: 0, options: [.repeat]) {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.2) {
+                self.likeButton.transform = .init(scaleX: 1.5, y: 1.5)
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.2) {
+                self.likeButton.transform = .identity
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.4, relativeDuration: 0.2) {
+                self.likeButton.transform = .init(scaleX: 1.3, y: 1.3)
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.6, relativeDuration: 0.2) {
+                self.likeButton.transform = .identity
+            }
+        }
         delegate?.likeButtonDidTapped(at: indexPath)
     }
     
