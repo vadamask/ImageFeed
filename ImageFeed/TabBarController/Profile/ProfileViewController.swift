@@ -89,7 +89,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     func setAvatar(_ url: URL) {
         let cache = ImageCache.default
         cache.clearDiskCache()
-        let processor = RoundCornerImageProcessor(cornerRadius: 25)
+        let processor = RoundCornerImageProcessor(cornerRadius: 50)
         
         profileImageView.kf.setImage(
             with: url,

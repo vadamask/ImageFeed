@@ -41,13 +41,13 @@ final class ProfileImageService: ProfileImageServiceProtocol {
             
             switch result {
             case .success(let user):
-                completion(.success(user.profileImage.medium))
+                completion(.success(user.profileImage.large))
                 NotificationCenter.default.post(
                     name: ProfileImageService.didChangeNotification,
                     object: self,
-                    userInfo: ["URL": user.profileImage.medium]
+                    userInfo: ["URL": user.profileImage.large]
                 )
-                self.avatarURL = user.profileImage.medium
+                self.avatarURL = user.profileImage.large
             case .failure(let error):
                 completion(.failure(error))
             }
