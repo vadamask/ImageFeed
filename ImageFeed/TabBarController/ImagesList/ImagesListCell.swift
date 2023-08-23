@@ -16,7 +16,16 @@ final class ImagesListCell: UITableViewCell {
  
     static let reuseIdentifier = "ImagesListCell"
     weak var delegate: ImagesListCellDelegate?
+    
     private var indexPath: IndexPath?
+    private var gradientView: GradientView?
+    private var state: CellImageState = .loading
+    
+    private enum CellImageState {
+        case loading
+        case error
+        case finished(UIImage)
+    }
     
     private let mainView: UIView = {
         let view = UIView()
@@ -70,25 +79,56 @@ final class ImagesListCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         cellImageView.kf.cancelDownloadTask()
+        removeGradientView()
     }
     
     func configure(with model: ImagesListCellModel, at indexPath: IndexPath) {
         self.indexPath = indexPath
-        
-        cellImageView.kf.indicatorType = .activity
-        if let url = URL(string:model.imageURL) {
-            cellImageView.kf.setImage(with: url, placeholder: UIImage(named: "stub")) { [weak self] _ in
+        configureImage(model.imageURL)
+        configureDateLabel(model.date)
+        configureLikeButton(model.isLiked)
+    }
+    
+    private func addGradientView() {
+        let gradientView = GradientView(frame: self.bounds)
+        cellImageView.addSubview(gradientView)
+        gradientView.animateGradientLayerLocations()
+        self.gradientView = gradientView
+    }
+    
+    private func removeGradientView() {
+        gradientView?.removeAllAnimations()
+        gradientView?.removeFromSuperview()
+    }
+    
+    private func configureImage(_ url: String) {
+        addGradientView()
+        if let url = URL(string: url) {
+            cellImageView.kf.setImage(with: url) { [weak self] result in
                 guard let self = self else { return }
-                cellImageView.kf.indicatorType = .none
+                switch result {
+                case .success(let value):
+                    state = .finished(value.image)
+                case .failure(_):
+                    state = .error
+                    cellImageView.image = UIImage(named: "stub")
+                }
+                removeGradientView()
             }
         }
-        if let date = model.date {
+    }
+    
+    private func configureLikeButton(_ isLiked: Bool) {
+        let image = isLiked ? UIImage(named: "like_active") : UIImage(named: "like_disable")
+        likeButton.setImage(image, for: .normal)
+    }
+    
+    private func configureDateLabel(_ date: Date?) {
+        if let date = date {
             dateLabel.text = dateFormatter.string(from: date)
         } else {
             dateLabel.text = ""
         }
-        let like = model.imageIsLiked ? UIImage(named: "like_active") : UIImage(named: "like_disable")
-        likeButton.setImage(like, for: .normal)
     }
     
     @objc private func likeButtonTapped() {
